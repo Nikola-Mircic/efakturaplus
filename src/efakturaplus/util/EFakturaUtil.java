@@ -8,15 +8,15 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.Flow.Subscriber;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class EFakturaUtil {	
-	// TEST KEY
-	// 
+	//Singleton instance
+	private static EFakturaUtil instance = null;
+	
 	private String API_KEY = "";
 	
 	// TESTING URI for an invoice [ xml ]
@@ -28,16 +28,8 @@ public class EFakturaUtil {
 	private HttpRequest GetIDRequest;
 	private HttpRequest GetInvoiceRequest;
 	
-	public EFakturaUtil() {
-		if(this.API_KEY == "") {
-			Scanner sc = new Scanner(System.in);
-			
-			System.out.println("Please enter your API key:");
-			
-			this.API_KEY = sc.next();
-			
-			sc.close();
-		}
+	private EFakturaUtil(String API_KEY) {
+		this.API_KEY = API_KEY;
 		
 		GetIDRequest = HttpRequest.newBuilder()
 				.POST(new BodyPublisher() {
@@ -60,6 +52,14 @@ public class EFakturaUtil {
 				.header("accept", "*/*")
 				.uri(URI.create(getInvoiceURI))
 				.build();
+	}
+	
+	public static EFakturaUtil getInstance(String API_KEY) {
+		if(instance == null) {
+			instance = new EFakturaUtil(API_KEY);
+		}
+		
+		return instance;
 	}
 	
 	private ArrayList<Integer> getIdsFromResponse(HttpResponse<String> response){
