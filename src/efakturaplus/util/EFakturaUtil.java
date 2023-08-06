@@ -13,20 +13,22 @@ import java.util.concurrent.Flow.Subscriber;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import efakturaplus.models.Invoice;
+
 public class EFakturaUtil {	
 	//Singleton instance
 	private static EFakturaUtil instance = null;
 	
 	private String API_KEY = "";
 	
-	// TESTING URI for an invoice [ xml ]
-	private final String getInvoiceURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/xml?invoiceId=19150969";
+	// URI for an invoice [ xml ]
+	// QUERY: ?invoiceId=SOME_ID (19150969)
+	private final String getInvoiceURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/xml";
 	
-	// TESTING URI for a list of ids [ json ]
+	// URI for a list of ids [ json ]
 	private final String getInvoiceIDsURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/ids?status=Approved";
 	
 	private HttpRequest GetIDRequest;
-	private HttpRequest GetInvoiceRequest;
 	
 	private EFakturaUtil(String API_KEY) {
 		this.API_KEY = API_KEY;
@@ -45,13 +47,6 @@ public class EFakturaUtil {
 				.header("accept", "text/plain")
 				.uri(URI.create(getInvoiceIDsURI))
 				.build();
-		
-		GetInvoiceRequest = HttpRequest.newBuilder()
-				.GET()
-				.header("ApiKey", this.API_KEY)
-				.header("accept", "*/*")
-				.uri(URI.create(getInvoiceURI))
-				.build();
 	}
 	
 	public static EFakturaUtil getInstance(String API_KEY) {
@@ -62,13 +57,13 @@ public class EFakturaUtil {
 		return instance;
 	}
 	
-	private ArrayList<Integer> getIdsFromResponse(HttpResponse<String> response){
-		ArrayList<Integer> ids = new ArrayList<Integer>();
+	private ArrayList<String> getIdsFromResponse(HttpResponse<String> response){
+		ArrayList<String> ids = new ArrayList<String>();
 		
 		JSONObject object = new JSONObject(response.body());
 		JSONArray purchaseInvoiceIds = object.getJSONArray("PurchaseInvoiceIds");
 		
-		purchaseInvoiceIds.toList().forEach((id) -> ids.add(Integer.parseInt(id.toString())));;
+		purchaseInvoiceIds.toList().forEach((id) -> ids.add(id.toString()));;
 		return ids;
 	}
 	
@@ -91,17 +86,31 @@ public class EFakturaUtil {
 		return null;
 	}
 	
-	public void getInvoiceExample() {
-		HttpResponse<String> res = sendRequest(GetInvoiceRequest);
+	public Invoice getInvoice(String invoiceId) {
+		HttpRequest request = HttpRequest.newBuilder()
+				.GET()
+				.header("ApiKey", this.API_KEY)
+				.header("accept", "*/*")
+				.uri(URI.create(getInvoiceURI+"?invoiceId="+invoiceId))
+				.build();
 		
-		System.out.println(res.body());
-		System.out.println(res.statusCode());
+		HttpResponse<String> res = sendRequest(request);
+		
+		Invoice invoice = new Invoice(res.body());
+		
+		System.out.println("[Status] getInvoice("+invoiceId+") : " + res.statusCode());
+		
+		return invoice;
 	}
 	
-	public void getIdsList() {
+	public ArrayList<String> getIdsList() {
 		HttpResponse<String> res = sendRequest(GetIDRequest);
 		
-		System.out.println(getIdsFromResponse(res));
-		System.out.println(res.statusCode());
+		ArrayList<String> ids = getIdsFromResponse(res);
+		
+		System.out.println(ids);
+		System.out.println("[Status] getIdsList() : " + res.statusCode());
+		
+		return ids;
 	}
 }

@@ -1,7 +1,9 @@
 package efakturaplus;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import efakturaplus.models.Invoice;
 import efakturaplus.util.EFakturaUtil;
 
 public class App {
@@ -18,8 +20,13 @@ public class App {
 		
 		EFakturaUtil efaktura = EFakturaUtil.getInstance(API_KEY);
 		
-		efaktura.getInvoiceExample();
-		efaktura.getIdsList();
+		ArrayList<String> ids = efaktura.getIdsList();
+		
+		for(String id : ids) {
+			Invoice invoice = efaktura.getInvoice(id);
+			
+			System.out.println("["+id+"] - "+invoice.parseSupplierParty());
+		}
 	}
 
 }
