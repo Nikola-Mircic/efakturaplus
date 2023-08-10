@@ -56,13 +56,19 @@ public class Invoice {
 		
 		parseParty(supplier, supplierParty);
 		parseParty(customer, customerParty);
-		//cbc:ActualDeliveryDat
+		//cbc:PaymentID
 		
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		
 		Node dateNode = doc.getElementsByTagName("cbc:ActualDeliveryDate").item(0);
 		this.deliveryDate = format.parse(dateNode.getTextContent());
-
+		
+		Node paymentIdNode = doc.getElementsByTagName("cbc:PaymentID").item(0);
+		String idString = paymentIdNode.getTextContent();
+		
+		this.paymentMod = idString.substring(4, 6);
+		this.paymentId = idString.substring(8);
+		
 	}
 	
 	private void parseParty(Party p, Node node) {

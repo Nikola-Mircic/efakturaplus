@@ -1,5 +1,7 @@
 package efakturaplus;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,7 +26,9 @@ public class App {
 		for(String id : ids) {
 			Invoice invoice = efaktura.getInvoice(id);
 			
-			System.out.println("<"+invoice.deliveryDate.toString()+">");
+			DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+			
+			System.out.println("<"+format.format(invoice.deliveryDate)+">  ("+invoice.paymentMod+")"+invoice.paymentId);
 			System.out.println(invoice.supplier);
 			System.out.println(invoice.customer);
 		}
