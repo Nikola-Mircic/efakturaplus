@@ -96,7 +96,7 @@ public class EFakturaUtil {
 		
 		HttpResponse<String> res = sendRequest(request);
 		
-		Invoice invoice = new Invoice(res.body());
+		Invoice invoice = new Invoice(invoiceId, res.body());
 		
 		System.out.println("[Status] getInvoice("+invoiceId+") : " + res.statusCode());
 		

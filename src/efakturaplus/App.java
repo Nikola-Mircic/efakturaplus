@@ -17,7 +17,6 @@ public class App {
 		
 		sc.close();
 		
-		
 		EFakturaUtil efaktura = EFakturaUtil.getInstance(API_KEY);
 		
 		ArrayList<String> ids = efaktura.getIdsList();
@@ -25,7 +24,8 @@ public class App {
 		for(String id : ids) {
 			Invoice invoice = efaktura.getInvoice(id);
 			
-			System.out.println("["+id+"] - "+invoice.parseSupplierParty());
+			System.out.println(invoice.supplier);
+			System.out.println(invoice.customer);
 		}
 	}
 
