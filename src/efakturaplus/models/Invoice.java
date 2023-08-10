@@ -1,11 +1,15 @@
 package efakturaplus.models;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,7 +48,7 @@ public class Invoice {
 		}
 	}
 	
-	private void parse(Document doc) {
+	private void parse(Document doc) throws DOMException, ParseException {
 		NodeList parties = doc.getElementsByTagName("cac:Party");
 		
 		Node supplierParty = parties.item(0);
@@ -52,6 +56,13 @@ public class Invoice {
 		
 		parseParty(supplier, supplierParty);
 		parseParty(customer, customerParty);
+		//cbc:ActualDeliveryDat
+		
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Node dateNode = doc.getElementsByTagName("cbc:ActualDeliveryDate").item(0);
+		this.deliveryDate = format.parse(dateNode.getTextContent());
+
 	}
 	
 	private void parseParty(Party p, Node node) {

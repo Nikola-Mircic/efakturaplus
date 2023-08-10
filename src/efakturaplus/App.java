@@ -24,6 +24,7 @@ public class App {
 		for(String id : ids) {
 			Invoice invoice = efaktura.getInvoice(id);
 			
+			System.out.println("<"+invoice.deliveryDate.toString()+">");
 			System.out.println(invoice.supplier);
 			System.out.println(invoice.customer);
 		}
