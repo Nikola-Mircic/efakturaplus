@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,7 +25,7 @@ public class Invoice {
 	public String paymentMod;
 	public String paymentId;
 	
-	public String payeeFinancialAcc;
+	public ArrayList<String> payeeFinancialAccs;
 	
 	public double taxExAmount; // Tax exclusive amount
 	public double taxAmount;
@@ -49,6 +50,9 @@ public class Invoice {
 	}
 	
 	private void parse(Document doc) throws DOMException, ParseException {
+		/*
+		 * PARTY PARSING
+		 */
 		NodeList parties = doc.getElementsByTagName("cac:Party");
 		
 		Node supplierParty = parties.item(0);
@@ -56,19 +60,34 @@ public class Invoice {
 		
 		parseParty(supplier, supplierParty);
 		parseParty(customer, customerParty);
-		//cbc:PaymentID
 		
+		/*
+		 * DATE PARSING
+		 */
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		
 		Node dateNode = doc.getElementsByTagName("cbc:ActualDeliveryDate").item(0);
 		this.deliveryDate = format.parse(dateNode.getTextContent());
 		
+		/*
+		 * PAYMENT ID PARSING
+		 */
 		Node paymentIdNode = doc.getElementsByTagName("cbc:PaymentID").item(0);
 		String idString = paymentIdNode.getTextContent();
 		
 		this.paymentMod = idString.substring(4, 6);
 		this.paymentId = idString.substring(8);
 		
+		/*
+		 * PARSING PAYEE FINANCIAL ACCOUNTS
+		 */
+		this.payeeFinancialAccs = new ArrayList<String>();
+		
+		NodeList accountNode = doc.getElementsByTagName("cac:PayeeFinancialAccount");
+
+		for(int i=0; i<accountNode.getLength(); ++i) {
+			this.payeeFinancialAccs.add(accountNode.item(i).getChildNodes().item(1).getTextContent());
+		}
 	}
 	
 	private void parseParty(Party p, Node node) {

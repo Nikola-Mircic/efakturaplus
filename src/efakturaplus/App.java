@@ -29,6 +29,13 @@ public class App {
 			DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 			
 			System.out.println("<"+format.format(invoice.deliveryDate)+">  ("+invoice.paymentMod+")"+invoice.paymentId);
+			
+			if(invoice.payeeFinancialAccs != null) {
+				for(String financialAcc : invoice.payeeFinancialAccs) {
+					System.out.println("<"+financialAcc+">");
+				}
+			}
+			
 			System.out.println(invoice.supplier);
 			System.out.println(invoice.customer);
 		}
