@@ -28,7 +28,7 @@ public class Invoice {
 	public ArrayList<String> payeeFinancialAccs;
 	
 	public double taxExAmount; // Tax exclusive amount
-	public double taxAmount;
+	public double payableAmount;
 	
 	public Invoice(String id, String source) {
 		supplier = new Party();
@@ -45,7 +45,7 @@ public class Invoice {
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println("ERROR: ["+e.getClass()+"]");
+			System.out.println("\u001B[31m" + "ERROR: ["+e.getClass()+"]"+"\u001B[0m");
 		}
 	}
 	
@@ -88,6 +88,15 @@ public class Invoice {
 		for(int i=0; i<accountNode.getLength(); ++i) {
 			this.payeeFinancialAccs.add(accountNode.item(i).getChildNodes().item(1).getTextContent());
 		}
+		
+		/*
+		 * PARSING PAYABLE AMOUNT
+		 */
+		Node TaxExAmount = doc.getElementsByTagName("cbc:TaxExclusiveAmount").item(0);
+		Node PayableAmount = doc.getElementsByTagName("cbc:PayableAmount").item(0);
+		
+		this.taxExAmount = Double.parseDouble(TaxExAmount.getTextContent());
+		this.payableAmount = Double.parseDouble(PayableAmount.getTextContent());
 	}
 	
 	private void parseParty(Party p, Node node) {

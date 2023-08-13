@@ -38,6 +38,7 @@ public class App {
 			
 			System.out.println(invoice.supplier);
 			System.out.println(invoice.customer);
+			System.out.println("--> " + invoice.payableAmount+" RSD");
 		}
 	}
 
