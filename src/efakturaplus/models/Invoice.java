@@ -16,6 +16,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import efakturaplus.util.*;
+
 public class Invoice {
 	public Party customer;
 	public Party supplier;
@@ -45,7 +47,7 @@ public class Invoice {
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println("\u001B[31m" + "ERROR: ["+e.getClass()+"]"+"\u001B[0m");
+			System.out.println(Color.RED + "ERROR: ["+e.getClass()+"]"+"\u001B[0m" + Color.RESET);
 		}
 	}
 	
@@ -136,6 +138,6 @@ class Party{
 	
 	@Override
 	public String toString() {
-		return "[Party] "+name+", "+streetName;
+		return Color.CYAN + "[Party] "+name+", "+streetName + Color.RESET;
 	}
 }
