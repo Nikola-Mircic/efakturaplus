@@ -4,7 +4,8 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+
+import efakturaplus.models.User;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -26,8 +27,16 @@ public class Window extends JFrame {
 			e.printStackTrace();
 		}
 		
-		this.setVisible(true);
+		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		if(User.API_KEY == "") {
+			KeyPanel panel = new KeyPanel(WIDTH, HEIGHT);
+			this.add(panel);
+
+		}
+		
+		this.setVisible(true);
 	}
 
 }
