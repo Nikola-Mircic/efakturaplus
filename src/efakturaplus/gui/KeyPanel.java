@@ -15,8 +15,11 @@ import efakturaplus.models.User;
 public class KeyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private Window parent;
 
-	public KeyPanel(int width, int height) {
+	public KeyPanel(Window parent, int width, int height) {
+		this.parent = parent;
 		this.setSize(width, height);
 		this.setLayout(null);
 		
@@ -52,6 +55,8 @@ public class KeyPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				User.API_KEY = keyInput.getText();
 				System.out.println(User.API_KEY);
+				
+				parent.switchPanels();
 			}
 		});
 		

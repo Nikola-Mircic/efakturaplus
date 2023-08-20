@@ -127,6 +127,21 @@ public class Invoice {
 		}
 	}
 	
+	
+	@Override
+	public String toString() {
+		String result = "";
+		
+		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		
+		result += "["+format.format(this.deliveryDate)+"] ";
+		
+		
+		result += this.supplier;
+		result += " --> " + this.payableAmount+" RSD";
+		
+		return result;
+	}
 }
 
 class Party{
