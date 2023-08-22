@@ -29,16 +29,13 @@ public class MainPanel extends JPanel {
 		
 		ArrayList<Invoice> invoices = efu.getInvoices("Approved");
 		
+		InvoiceList il = new InvoiceList(this.getWidth(), this.getHeight());
+		
 		for (int i = 0; i < invoices.size(); i++) {
-			JLabel label = new JLabel(invoices.get(i).toString());
-			
-			label.setFont(new Font("Arial", Font.PLAIN, 20));
-			label.setBounds(15, i*25, this.getWidth(), 25);
-			
-			label.setForeground(Color.black);
-			
-			this.add(label);
+			il.addInvoice(invoices.get(i));
 		}
+		
+		this.add(il);
 		
 		this.setVisible(true);
 	}
