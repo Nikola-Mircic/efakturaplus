@@ -1,6 +1,7 @@
 package efakturaplus.util;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import efakturaplus.models.Invoice;
+import efakturaplus.models.User;
 
 public class EFakturaUtil {	
 	//Singleton instance
@@ -26,32 +28,15 @@ public class EFakturaUtil {
 	private final String getInvoiceURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/xml";
 	
 	// URI for a list of ids [ json ]
-	private final String getInvoiceIDsURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/ids?status=Approved";
-	
-	private HttpRequest GetIDRequest;
-	
+	private final String getInvoiceIDsURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/ids?status=";
+
 	private EFakturaUtil(String API_KEY) {
 		this.API_KEY = API_KEY;
-		
-		GetIDRequest = HttpRequest.newBuilder()
-				.POST(new BodyPublisher() {
-					public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
-						// TODO Auto-generated method stub
-					}
-					public long contentLength() {
-						// TODO Auto-generated method stub
-						return 0;
-					}
-				})
-				.header("ApiKey", this.API_KEY)
-				.header("accept", "text/plain")
-				.uri(URI.create(getInvoiceIDsURI))
-				.build();
 	}
 	
-	public static EFakturaUtil getInstance(String API_KEY) {
+	public static EFakturaUtil getInstance() {
 		if(instance == null) {
-			instance = new EFakturaUtil(API_KEY);
+			instance = new EFakturaUtil(User.API_KEY);
 		}
 		
 		return instance;
@@ -103,8 +88,23 @@ public class EFakturaUtil {
 		return invoice;
 	}
 	
-	public ArrayList<String> getIdsList() {
-		HttpResponse<String> res = sendRequest(GetIDRequest);
+	public ArrayList<String> getIdsList(String status) {
+		HttpRequest getIDRequest = HttpRequest.newBuilder()
+				.POST(new BodyPublisher() {
+					public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
+						// TODO Auto-generated method stub
+					}
+					public long contentLength() {
+						// TODO Auto-generated method stub
+						return 0;
+					}
+				})
+				.header("ApiKey", this.API_KEY)
+				.header("accept", "text/plain")
+				.uri(URI.create(getInvoiceIDsURI+status))
+				.build();
+		
+		HttpResponse<String> res = sendRequest(getIDRequest);
 		
 		ArrayList<String> ids = getIdsFromResponse(res);
 		
@@ -112,5 +112,17 @@ public class EFakturaUtil {
 		System.out.println("[Status] getIdsList() : " + Color.MAGENTA + res.statusCode() + Color.RESET);
 		
 		return ids;
+	}
+	
+	public ArrayList<Invoice> getInvoices(String status){
+		ArrayList<Invoice> list = new ArrayList<Invoice>();
+		
+		ArrayList<String> ids = getIdsList(status);
+		
+		for(String id: ids) {
+			list.add(this.getInvoice(id));
+		}
+		
+		return list;
 	}
 }
