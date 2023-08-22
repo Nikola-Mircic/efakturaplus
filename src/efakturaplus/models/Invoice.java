@@ -104,7 +104,8 @@ public class Invoice {
 	private void parseParty(Party p, Node node) {
 		switch (node.getNodeName()) {
 		case "cbc:Name":
-			p.name = node.getTextContent();
+			if(p.name == null)
+				p.name = node.getTextContent();
 			break;
 		case "cbc:StreetName":
 			p.streetName = node.getTextContent();
@@ -142,17 +143,12 @@ public class Invoice {
 		
 		return result;
 	}
-}
-
-class Party{
-	public String name;
-	public String streetName;
-	public String cityName;
-	public String postalZone;
-	public String countryIdCode;
 	
-	@Override
-	public String toString() {
-		return Color.CYAN + "[Party] "+name+", "+streetName + Color.RESET;
+	public String getDateString() {
+		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		
+		return format.format(this.deliveryDate);
 	}
+	
+	
 }
