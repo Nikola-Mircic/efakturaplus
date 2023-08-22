@@ -1,15 +1,17 @@
 package efakturaplus.gui;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 
-import efakturaplus.models.Invoice;
+import efakturaplus.models.*;
 
 public class InvoiceList extends JComponent {
 
@@ -29,7 +31,7 @@ public class InvoiceList extends JComponent {
 	}
 	
 	public void addInvoice(Invoice invoice) {
-		this.add(new InvoiceListItem(invoice, this.invoices.size()));
+		this.add(new InvoiceListItem(invoice, new Dimension(this.getWidth(), 35), this.invoices.size()));
 		this.validate();
 		
 		this.invoices.add(invoice);
@@ -44,13 +46,13 @@ class InvoiceListItem extends JComponent implements MouseListener{
 	
 	Invoice invoice;
 	
-	public InvoiceListItem(Invoice invoice, int idx) {
+	public InvoiceListItem(Invoice invoice, Dimension size, int idx) {
 		super();
 		this.invoice = invoice;
 		
-		int w = 600;
-		int h = 30;
-		this.setBounds(0, 30*idx, w, h);
+		int w = size.width;
+		int h = size.height;
+		this.setBounds(0, h*idx, w, h);
 		
 		this.display();
 		
@@ -60,14 +62,24 @@ class InvoiceListItem extends JComponent implements MouseListener{
 	}
 	
 	private void display() {
-		JLabel label = new JLabel(this.invoice.toString());
+		Border border = BorderFactory.createLineBorder(Color.cyan, 1);
+		this.setBorder(border);
 		
-		label.setFont(new Font("Arial", Font.PLAIN, 20));
-		label.setBounds(15, 0, this.getWidth(), 25);
+		JLabel date = new JLabel(this.invoice.getDateString());
+		JLabel supplier = new JLabel(this.invoice.supplier.toString());
+		JLabel amount = new JLabel("" + this.invoice.payableAmount);
 		
+		date.setBounds(15, 5, this.getWidth()/4, 25);
+		supplier.setBounds(this.getWidth()/2, 5, this.getWidth()/2, 25);
+		amount.setBounds(this.getWidth()/4, 5, this.getWidth()/4, 25);
+		
+		this.add(date);
+		this.add(supplier);
+		this.add(amount);
+		
+		/*label.setFont(new Font("Arial", Font.PLAIN, 20));
 		label.setForeground(Color.black);
-		
-		this.add(label);
+		*/
 	}
 
 	@Override

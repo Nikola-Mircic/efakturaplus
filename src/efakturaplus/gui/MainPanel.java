@@ -1,16 +1,11 @@
 package efakturaplus.gui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.LayoutManager;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import efakturaplus.models.Invoice;
-import efakturaplus.models.User;
+import efakturaplus.models.InvoiceStatus;
 import efakturaplus.util.EFakturaUtil;
 
 public class MainPanel extends JPanel {
@@ -27,7 +22,7 @@ public class MainPanel extends JPanel {
 	public void printInvoices() {
 		EFakturaUtil efu = EFakturaUtil.getInstance();
 		
-		ArrayList<Invoice> invoices = efu.getInvoices("Approved");
+		ArrayList<Invoice> invoices = efu.getInvoices(InvoiceStatus.Approved);
 		
 		InvoiceList il = new InvoiceList(this.getWidth(), this.getHeight());
 		
