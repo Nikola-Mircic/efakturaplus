@@ -46,6 +46,8 @@ class InvoiceListItem extends JComponent implements MouseListener{
 	
 	Invoice invoice;
 	
+	Color borderColor;
+	
 	public InvoiceListItem(Invoice invoice, Dimension size, int idx) {
 		super();
 		this.invoice = invoice;
@@ -54,6 +56,8 @@ class InvoiceListItem extends JComponent implements MouseListener{
 		int h = size.height;
 		this.setBounds(0, h*idx, w, h);
 		
+		this.selectBorderColor();
+		
 		this.display();
 		
 		this.addMouseListener(this);
@@ -61,8 +65,26 @@ class InvoiceListItem extends JComponent implements MouseListener{
 		this.setVisible(true);
 	}
 	
+	private void selectBorderColor() {
+		switch (this.invoice.status) {
+		case ReNotified:
+			this.borderColor = Color.red;
+			break;
+		case New:
+			this.borderColor = Color.green;
+			break;
+		case Approved:
+			this.borderColor = Color.cyan;
+			break;
+
+		default:
+			this.borderColor = Color.gray;
+			break;
+		}
+	}
+	
 	private void display() {
-		Border border = BorderFactory.createLineBorder(Color.cyan, 1);
+		Border border = BorderFactory.createLineBorder(this.borderColor, 1);
 		this.setBorder(border);
 		
 		JLabel date = new JLabel(this.invoice.getDateString());

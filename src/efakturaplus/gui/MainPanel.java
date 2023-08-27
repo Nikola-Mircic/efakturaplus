@@ -20,9 +20,17 @@ public class MainPanel extends JPanel {
 	}
 
 	public void printInvoices() {
+		displayInvoicesByStatus(InvoiceStatus.ReNotified);
+		displayInvoicesByStatus(InvoiceStatus.New);
+		displayInvoicesByStatus(InvoiceStatus.Seen);
+		displayInvoicesByStatus(InvoiceStatus.Approved);
+		
+	}
+	
+	private void displayInvoicesByStatus(InvoiceStatus status) {
 		EFakturaUtil efu = EFakturaUtil.getInstance();
 		
-		ArrayList<Invoice> invoices = efu.getInvoices(InvoiceStatus.Approved);
+		ArrayList<Invoice> invoices = efu.getInvoices(status);
 		
 		InvoiceList il = new InvoiceList(this.getWidth(), this.getHeight());
 		

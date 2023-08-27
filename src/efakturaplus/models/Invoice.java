@@ -32,6 +32,8 @@ public class Invoice {
 	public double taxExAmount; // Tax exclusive amount
 	public double payableAmount;
 	
+	public InvoiceStatus status;
+	
 	public Invoice(String id, String source) {
 		supplier = new Party();
 		customer = new Party();

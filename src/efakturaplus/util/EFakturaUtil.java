@@ -120,7 +120,9 @@ public class EFakturaUtil {
 		ArrayList<String> ids = getIdsList(status);
 		
 		for(String id: ids) {
-			list.add(this.getInvoice(id));
+			Invoice inv = this.getInvoice(id);
+			inv.status = status;
+			list.add(inv);
 		}
 		
 		return list;
