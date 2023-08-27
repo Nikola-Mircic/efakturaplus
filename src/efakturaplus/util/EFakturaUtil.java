@@ -1,7 +1,6 @@
 package efakturaplus.util;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -15,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import efakturaplus.models.Invoice;
+import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.User;
 
 public class EFakturaUtil {	
@@ -88,7 +88,7 @@ public class EFakturaUtil {
 		return invoice;
 	}
 	
-	public ArrayList<String> getIdsList(String status) {
+	public ArrayList<String> getIdsList(InvoiceStatus status) {
 		HttpRequest getIDRequest = HttpRequest.newBuilder()
 				.POST(new BodyPublisher() {
 					public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
@@ -114,13 +114,15 @@ public class EFakturaUtil {
 		return ids;
 	}
 	
-	public ArrayList<Invoice> getInvoices(String status){
+	public ArrayList<Invoice> getInvoices(InvoiceStatus status){
 		ArrayList<Invoice> list = new ArrayList<Invoice>();
 		
 		ArrayList<String> ids = getIdsList(status);
 		
 		for(String id: ids) {
-			list.add(this.getInvoice(id));
+			Invoice inv = this.getInvoice(id);
+			inv.status = status;
+			list.add(inv);
 		}
 		
 		return list;
