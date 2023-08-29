@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
 import efakturaplus.util.EFakturaUtil;
+import test.myrenderer.PDFDisplay;
 
 public class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -17,6 +18,8 @@ public class MainPanel extends JPanel {
 		this.parent = parent;
 		this.setSize(width, height);
 		this.setLayout(null);
+		
+		String filename = "/home/nikola/Desktop/plati.euprava.gov.rs_api_Payment_PaymentSlips.pdf";
 		
 	}
 
@@ -40,7 +43,7 @@ public class MainPanel extends JPanel {
 		}
 
 		this.add(il);
-
+		
 		this.setVisible(true);
 	}
 

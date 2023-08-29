@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
-import efakturaplus.models.Invoice;
+import efakturaplus.models.Invoice;;
 
 public class InvoiceList extends JComponent {
 
@@ -44,9 +45,11 @@ class InvoiceListItem extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
 
-	Invoice invoice;
+	private Invoice invoice;
 
-	Color borderColor;
+	private Color borderColor;
+	
+	private boolean selected = false;
 
 	public InvoiceListItem(Invoice invoice, Dimension size, int idx) {
 		super();
@@ -106,8 +109,27 @@ class InvoiceListItem extends JComponent implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(this.invoice);
-
+		if(this.selected) {
+			JFrame frame1 = new JFrame("PDF Document");
+			PDFDisplay pdfDisplay1 = new PDFDisplay(this.invoice.pdfInvoice);		
+			frame1.add(pdfDisplay1);
+			frame1.setSize(700, 1000);
+			frame1.setVisible(true);
+			
+			if(this.invoice.pdfAttachment != null) {
+				JFrame frame2 = new JFrame("PDF Attachment");
+				PDFDisplay pdfDisplay2 = new PDFDisplay(this.invoice.pdfAttachment);		
+				frame2.add(pdfDisplay2);
+				frame2.setSize(700, 1000);
+				frame2.setVisible(true);
+			}
+			
+			selected = false;
+		}else {
+			this.setBackground(borderColor);
+			selected = true;
+		}
+		
 	}
 
 	@Override

@@ -1,10 +1,13 @@
 package efakturaplus.models;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -15,6 +18,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.sun.pdfview.PDFFile;
 
 import efakturaplus.util.Color;
 
@@ -33,6 +38,9 @@ public class Invoice {
 	public double payableAmount;
 
 	public InvoiceStatus status;
+	
+	public PDFFile pdfInvoice;
+	public PDFFile pdfAttachment;
 
 	public Invoice(String id, String source) {
 		supplier = new Party();
@@ -50,10 +58,11 @@ public class Invoice {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(Color.RED + "ERROR: ["+e.getClass()+"]"+"\u001B[0m" + Color.RESET);
+			System.out.println(Color.GREEN_BOLD + e.getMessage() + Color.RESET);
 		}
 	}
 
-	private void parse(Document doc) throws DOMException, ParseException {
+	private void parse(Document doc) throws DOMException, ParseException, IOException {
 		/*
 		 * PARTY PARSING
 		 */
@@ -101,6 +110,24 @@ public class Invoice {
 
 		this.taxExAmount = Double.parseDouble(TaxExAmount.getTextContent());
 		this.payableAmount = Double.parseDouble(PayableAmount.getTextContent());
+		
+		/*
+		 * PARSING PDF INVOICE AND PDF ATTACHMENT
+		 * */
+		Node DocumentPDF = doc.getElementsByTagName("env:DocumentPdf").item(0);
+		byte[] documentBytes = Base64.getDecoder().decode(DocumentPDF.getTextContent().getBytes("UTF-8"));
+		this.pdfInvoice = new PDFFile(ByteBuffer.wrap(documentBytes));
+		System.out.println(this.pdfInvoice.getNumPages());
+		
+		/*
+		 * PARSING PDF ATTACHMENT
+		 * */
+		Node AttachmentPDF = doc.getElementsByTagName("cbc:EmbeddedDocumentBinaryObject").item(0);
+		if(AttachmentPDF != null) {
+			byte[] attachmentBytes = Base64.getDecoder().decode(AttachmentPDF.getTextContent().getBytes("UTF-8"));
+			this.pdfAttachment = new PDFFile(ByteBuffer.wrap(attachmentBytes));
+			System.out.println(this.pdfAttachment.getNumPages());
+		}
 	}
 
 	private void parseParty(Party p, Node node) {
