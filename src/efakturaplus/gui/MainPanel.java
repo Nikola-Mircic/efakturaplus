@@ -1,9 +1,12 @@
 package efakturaplus.gui;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 
+import ch.randelshofer.util.ArrayUtil;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
 import efakturaplus.util.EFakturaUtil;
@@ -35,6 +38,7 @@ public class MainPanel extends JPanel {
 		EFakturaUtil efu = EFakturaUtil.getInstance();
 
 		ArrayList<Invoice> invoices = efu.getInvoices(status);
+		Collections.reverse(invoices);
 
 		InvoiceList il = new InvoiceList(this.getWidth(), this.getHeight());
 
