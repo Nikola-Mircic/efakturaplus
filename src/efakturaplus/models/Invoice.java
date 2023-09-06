@@ -175,8 +175,10 @@ public class Invoice {
 
 	public String getDateString() {
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
-		return format.format(this.deliveryDate);
+		
+		if(this.deliveryDate != null)
+			return format.format(this.deliveryDate);
+		return format.format(new Date());
 	}
 
 

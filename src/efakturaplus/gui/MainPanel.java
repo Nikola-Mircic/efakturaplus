@@ -16,6 +16,8 @@ public class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private Window parent;
+	
+	private InvoiceList il;
 
 	public MainPanel(Window parent, int width, int height) {
 		this.parent = parent;
@@ -24,6 +26,8 @@ public class MainPanel extends JPanel {
 		
 		String filename = "/home/nikola/Desktop/plati.euprava.gov.rs_api_Payment_PaymentSlips.pdf";
 		
+		il = new InvoiceList(this.getWidth(), this.getHeight());
+		this.add(il);
 	}
 
 	public void printInvoices() {
@@ -40,13 +44,9 @@ public class MainPanel extends JPanel {
 		ArrayList<Invoice> invoices = efu.getInvoices(status);
 		Collections.reverse(invoices);
 
-		InvoiceList il = new InvoiceList(this.getWidth(), this.getHeight());
-
 		for (Invoice element : invoices) {
 			il.addInvoice(element);
 		}
-
-		this.add(il);
 		
 		this.setVisible(true);
 	}

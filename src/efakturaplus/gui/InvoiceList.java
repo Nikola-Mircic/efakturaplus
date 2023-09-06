@@ -76,6 +76,9 @@ class InvoiceListItem extends JComponent implements MouseListener{
 		case New:
 			this.borderColor = Color.green;
 			break;
+		case Seen:
+			this.borderColor = Color.blue;
+			break;
 		case Approved:
 			this.borderColor = Color.cyan;
 			break;
