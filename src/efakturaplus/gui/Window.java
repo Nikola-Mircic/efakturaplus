@@ -1,5 +1,6 @@
 package efakturaplus.gui;
 
+import java.awt.CardLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -14,9 +15,11 @@ public class Window extends JFrame {
 	private int WIDTH = 800;
 	private int HEIGHT = 600;
 
-	KeyPanel keyPanel;
-	MainPanel mainPanel;
-
+	private KeyPanel keyPanel;
+	private MainPanel mainPanel;
+	
+	private CardLayout panels;
+	
 	public Window() {
 		this(TITLE);
 	}
@@ -33,29 +36,30 @@ public class Window extends JFrame {
 			e.printStackTrace();
 		}
 
-
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+		
+		this.panels = new CardLayout();
+		this.setLayout(panels);
+		
 		this.keyPanel = new KeyPanel(this, WIDTH, HEIGHT);
 		this.mainPanel = new MainPanel(this, WIDTH, HEIGHT);
-
+		
+		this.add(keyPanel, "KEY_PANEL");
+		this.add(mainPanel, "MAIN_PANEL");
+		
 		if(User.API_KEY == "") {
-			this.add(this.keyPanel);
+			panels.show(this.getContentPane(), "KEY_PANEL");
 		}else {
-			this.add(this.keyPanel);
+			panels.show(this.getContentPane(), "MAIN_PANEL");
 		}
 
 		this.setVisible(true);
 	}
 
 	public void switchPanels() {
-		this.keyPanel.setVisible(false);
-		this.remove(keyPanel);
-
 		this.mainPanel.printInvoices();
-		this.mainPanel.setVisible(true);
-		this.add(mainPanel);
-
+		
+		this.panels.show(this.getContentPane(), "MAIN_PANEL");
 	}
 
 }

@@ -47,8 +47,6 @@ public class MainPanel extends JPanel {
 		for (Invoice element : invoices) {
 			il.addInvoice(element);
 		}
-		
-		this.setVisible(true);
 	}
 
 }
