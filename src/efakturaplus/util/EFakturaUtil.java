@@ -7,8 +7,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Flow.Subscriber;
+
+import javax.swing.text.DateFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -89,6 +94,22 @@ public class EFakturaUtil {
 	}
 
 	public ArrayList<String> getIdsList(InvoiceStatus status) {
+		Date date = new Date();
+		
+		Calendar c = Calendar.getInstance();
+		
+		c.setTime(date);
+		
+		c.add(Calendar.MONTH, -1);
+		c.set(Calendar.DAY_OF_MONTH, 1);
+		
+		Date fromDate = c.getTime();
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		
+		String fromDateStr = "dateFrom=" + format.format(fromDate);
+		String toDateStr = "dateTo=" + format.format(date);
+		
 		HttpRequest getIDRequest = HttpRequest.newBuilder()
 				.POST(new BodyPublisher() {
 					@Override
@@ -103,7 +124,7 @@ public class EFakturaUtil {
 				})
 				.header("ApiKey", this.API_KEY)
 				.header("accept", "text/plain")
-				.uri(URI.create(getInvoiceIDsURI+status))
+				.uri(URI.create(getInvoiceIDsURI + status + "&" + fromDateStr + "&" + toDateStr))
 				.build();
 
 		HttpResponse<String> res = sendRequest(getIDRequest);
