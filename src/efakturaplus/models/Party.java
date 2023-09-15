@@ -6,7 +6,7 @@ public class Party{
 	public String cityName;
 	public String postalZone;
 	public String countryIdCode;
-	
+
 	@Override
 	public String toString() {
 		return name+", "+streetName;
