@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -19,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;;
@@ -43,7 +46,7 @@ public class InvoiceList extends JPanel {
 	}
 
 	public void addInvoice(Invoice invoice) {
-		InvoiceListItem item = new InvoiceListItem(invoice, new Dimension(this.getWidth(), 35), this.invoices.size());
+		InvoiceListItem item = new InvoiceListItem(invoice);
 		
 		int n = this.invoices.size();
 		
@@ -73,29 +76,40 @@ public class InvoiceList extends JPanel {
 
 }
 
-class InvoiceListItem extends JComponent implements MouseListener{
+class InvoiceListItem implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
+	
+	private static InvoiceListItem selectedInvoice = null;
 
 	private Invoice invoice;
 
 	private Color borderColor;
-	
-	private boolean selected = false;
+	private Color fontColor;
+	private Color bckgColor;
 	
 	public JLabel date;
 	public JLabel amount;
 	public JLabel supplier;
 
-	public InvoiceListItem(Invoice invoice, Dimension size, int idx) {
+	public InvoiceListItem(Invoice invoice) {
 		super();
 		this.invoice = invoice;
 
 		this.selectBorderColor();
+		
+		this.fontColor = UIManager.getColor ( "Label.foreground" );;
+		this.bckgColor = UIManager.getColor ( "Panel.background" );;
 
-		this.loadComponents();
-
-		this.addMouseListener(this);
+		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
+		this.amount = new JLabel("" + this.invoice.payableAmount, JLabel.CENTER);
+		this.supplier = new JLabel(this.invoice.supplier.name.toString());
+		
+		this.date.addMouseListener(this);
+		this.amount.addMouseListener(this);
+		this.supplier.addMouseListener(this);
+		
+		loadComponents();
 	}
 
 	private void selectBorderColor() {
@@ -120,26 +134,26 @@ class InvoiceListItem extends JComponent implements MouseListener{
 	}
 
 	private void loadComponents() {
-		this.removeAll();
-		this.setBorder(null);
+		setComponentUI(date);
+		setComponentUI(amount);
+		setComponentUI(supplier);
+	}
+	
+	private void setComponentUI(JLabel label) {
+		label.setOpaque(true);
 
-		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
-		this.amount = new JLabel("" + this.invoice.payableAmount, JLabel.CENTER);
-		this.supplier = new JLabel(this.invoice.supplier.name.toString());
-		
 		Border border = BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor);
-		this.date.setBorder(border);
-		this.amount.setBorder(border);
-		this.supplier.setBorder(border);
+		label.setBorder(border);
+
+		label.setForeground(fontColor);
 		
-		this.date.addMouseListener(this);
-		this.amount.addMouseListener(this);
-		this.supplier.addMouseListener(this);
+		label.setBackground(bckgColor);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(this.selected) {
+		if( this.equals(selectedInvoice) ) {
+			System.out.println(efakturaplus.util.Color.CYAN+"Loading PDF doucments..." + efakturaplus.util.Color.RESET);
 			JFrame frame1 = new JFrame("PDF Document");
 			PDFDisplay pdfDisplay1 = new PDFDisplay(this.invoice.pdfInvoice);		
 			frame1.add(pdfDisplay1);
@@ -153,17 +167,29 @@ class InvoiceListItem extends JComponent implements MouseListener{
 				frame2.setSize(700, 1000);
 				frame2.setVisible(true);
 			}
-			
-			selected = false;
 		}else {
-			this.date.setBackground(borderColor);
-			this.amount.setBackground(borderColor);
-			this.supplier.setBackground(borderColor);
-			selected = true;
+			if(selectedInvoice != null) 
+				deselect(selectedInvoice);
+			
+			selectedInvoice = this;
+			select(this);
 		}
-		
 	}
-
+	
+	private void select(InvoiceListItem item) {
+		item.bckgColor = borderColor;
+		item.fontColor = Color.BLACK;
+		item.loadComponents();
+		System.out.println("Selected:" + item.invoice.supplier.name);
+	}
+	
+	private void deselect(InvoiceListItem item) {
+		item.bckgColor = UIManager.getColor ( "Panel.background" );
+		item.fontColor = UIManager.getColor ( "Label.foreground" );
+		item.loadComponents();
+		System.out.println("Deselected:" + item.invoice.supplier.name);
+	}
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
