@@ -1,5 +1,6 @@
 package efakturaplus.gui;
 
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,12 +23,10 @@ public class MainPanel extends JPanel {
 	public MainPanel(Window parent, int width, int height) {
 		this.parent = parent;
 		this.setSize(width, height);
-		this.setLayout(null);
-		
-		String filename = "/home/nikola/Desktop/plati.euprava.gov.rs_api_Payment_PaymentSlips.pdf";
+		this.setLayout(new BorderLayout());
 		
 		il = new InvoiceList(this.getWidth(), this.getHeight());
-		this.add(il);
+		this.add(il, BorderLayout.CENTER);
 	}
 
 	public void printInvoices() {

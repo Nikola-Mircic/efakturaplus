@@ -1,7 +1,14 @@
 package efakturaplus.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -10,33 +17,58 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;;
 
-public class InvoiceList extends JComponent {
+public class InvoiceList extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	ArrayList<Invoice> invoices;
+	
+	private JPanel invoiceDisplay;
 
 	public InvoiceList(int width, int height) {
-		this.setSize(width, height);
-		this.setLayout(null);
-
+		this.setLayout(new BorderLayout());
+		
 		this.invoices = new ArrayList<>();
-	}
-
-	public int getLength() {
-		return this.invoices.size();
+		
+		this.invoiceDisplay = new JPanel(new GridBagLayout());
+		
+		JScrollPane sp = new JScrollPane(invoiceDisplay);
+		this.add(sp, BorderLayout.CENTER);
 	}
 
 	public void addInvoice(Invoice invoice) {
-		this.add(new InvoiceListItem(invoice, new Dimension(this.getWidth(), 35), this.invoices.size()));
-		this.validate();
-
+		InvoiceListItem item = new InvoiceListItem(invoice, new Dimension(this.getWidth(), 35), this.invoices.size());
+		
+		int n = this.invoices.size();
+		
+		GridBagConstraints constr = new GridBagConstraints();
+		constr.gridy = n*45;
+        constr.anchor = GridBagConstraints.CENTER;
+        constr.weightx  = 0.5;
+        constr.weighty = 1.0;
+		constr.ipadx = 15;
+		constr.ipady = 12;
+		constr.fill = GridBagConstraints.BOTH;
+		
+		constr.gridx = 0;
+		constr.gridwidth = 1;
+		this.invoiceDisplay.add(item.date, constr);
+		
+		constr.gridx = 1;
+		constr.gridwidth = 1;
+		this.invoiceDisplay.add(item.amount, constr);
+		
+		constr.gridx = 2;
+		constr.gridwidth = 2;
+		this.invoiceDisplay.add(item.supplier, constr);
+		
 		this.invoices.add(invoice);
-
 	}
 
 }
@@ -50,22 +82,20 @@ class InvoiceListItem extends JComponent implements MouseListener{
 	private Color borderColor;
 	
 	private boolean selected = false;
+	
+	public JLabel date;
+	public JLabel amount;
+	public JLabel supplier;
 
 	public InvoiceListItem(Invoice invoice, Dimension size, int idx) {
 		super();
 		this.invoice = invoice;
 
-		int w = size.width;
-		int h = size.height;
-		this.setBounds(0, h*idx, w, h);
-
 		this.selectBorderColor();
 
-		this.display();
+		this.loadComponents();
 
 		this.addMouseListener(this);
-
-		this.setVisible(true);
 	}
 
 	private void selectBorderColor() {
@@ -89,25 +119,22 @@ class InvoiceListItem extends JComponent implements MouseListener{
 		}
 	}
 
-	private void display() {
-		Border border = BorderFactory.createLineBorder(this.borderColor, 1);
-		this.setBorder(border);
+	private void loadComponents() {
+		this.removeAll();
+		this.setBorder(null);
 
-		JLabel date = new JLabel(this.invoice.getDateString());
-		JLabel supplier = new JLabel(this.invoice.supplier.toString());
-		JLabel amount = new JLabel("" + this.invoice.payableAmount);
-
-		date.setBounds(15, 5, this.getWidth()/4, 25);
-		supplier.setBounds(this.getWidth()/2, 5, this.getWidth()/2, 25);
-		amount.setBounds(this.getWidth()/4, 5, this.getWidth()/4, 25);
-
-		this.add(date);
-		this.add(supplier);
-		this.add(amount);
-
-		/*label.setFont(new Font("Arial", Font.PLAIN, 20));
-		label.setForeground(Color.black);
-		*/
+		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
+		this.amount = new JLabel("" + this.invoice.payableAmount, JLabel.CENTER);
+		this.supplier = new JLabel(this.invoice.supplier.name.toString());
+		
+		Border border = BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor);
+		this.date.setBorder(border);
+		this.amount.setBorder(border);
+		this.supplier.setBorder(border);
+		
+		this.date.addMouseListener(this);
+		this.amount.addMouseListener(this);
+		this.supplier.addMouseListener(this);
 	}
 
 	@Override
@@ -129,7 +156,9 @@ class InvoiceListItem extends JComponent implements MouseListener{
 			
 			selected = false;
 		}else {
-			this.setBackground(borderColor);
+			this.date.setBackground(borderColor);
+			this.amount.setBackground(borderColor);
+			this.supplier.setBackground(borderColor);
 			selected = true;
 		}
 		
