@@ -126,6 +126,7 @@ public class EFakturaUtil {
 				.header("accept", "text/plain")
 				.uri(URI.create(getInvoiceIDsURI + status + "&" + fromDateStr + "&" + toDateStr))
 				.build();
+				
 
 		HttpResponse<String> res = sendRequest(getIDRequest);
 
