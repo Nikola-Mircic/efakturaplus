@@ -79,7 +79,7 @@ public class Invoice {
 		 */
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-		Node dateNode = doc.getElementsByTagName("cbc:ActualDeliveryDate").item(0);
+		Node dateNode = doc.getElementsByTagName("cbc:IssueDate").item(0);
 		this.deliveryDate = format.parse(dateNode.getTextContent());
 
 		/*
