@@ -126,7 +126,6 @@ public class Invoice {
 		if(AttachmentPDF != null) {
 			byte[] attachmentBytes = Base64.getDecoder().decode(AttachmentPDF.getTextContent().getBytes("UTF-8"));
 			this.pdfAttachment = new PDFFile(ByteBuffer.wrap(attachmentBytes));
-			System.out.println(this.pdfAttachment.getNumPages());
 		}
 	}
 

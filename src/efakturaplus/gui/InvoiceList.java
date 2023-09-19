@@ -181,14 +181,12 @@ class InvoiceListItem implements MouseListener{
 		item.bckgColor = borderColor;
 		item.fontColor = Color.BLACK;
 		item.loadComponents();
-		System.out.println("Selected:" + item.invoice.supplier.name);
 	}
 	
 	private void deselect(InvoiceListItem item) {
 		item.bckgColor = UIManager.getColor ( "Panel.background" );
 		item.fontColor = UIManager.getColor ( "Label.foreground" );
 		item.loadComponents();
-		System.out.println("Deselected:" + item.invoice.supplier.name);
 	}
 	
 	@Override

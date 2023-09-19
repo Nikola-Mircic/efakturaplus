@@ -3,17 +3,14 @@ package efakturaplus.gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import javax.swing.JPanel;
 
-import ch.randelshofer.util.ArrayUtil;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
 import efakturaplus.util.EFakturaUtil;
-import test.myrenderer.PDFDisplay;
 
 public class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -23,11 +20,10 @@ public class MainPanel extends JPanel {
 	private CardLayout dataPanelLayout;
 	
 	private InvoiceList purchaseIl;
-	private InvoiceList salsesIl;
+	private InvoiceList salesIl;
 
-	public MainPanel(Window parent, int width, int height) {
+	public MainPanel(Window parent) {
 		this.parent = parent;
-		this.setSize(width, height);
 		this.setLayout(new BorderLayout());
 		
 		dataPanelLayout = new CardLayout();
@@ -37,8 +33,8 @@ public class MainPanel extends JPanel {
 		purchaseIl = new InvoiceList();
 		dataPanel.add(purchaseIl, "PURCHASE");
 		
-		salsesIl = new InvoiceList();
-		dataPanel.add(salsesIl, "Sales");
+		salesIl = new InvoiceList();
+		dataPanel.add(salesIl, "Sales");
 		
 		dataPanelLayout.show(dataPanel, "PURCHASE");
 		
@@ -46,6 +42,11 @@ public class MainPanel extends JPanel {
 	}
 
 	public void printPurchaseInvoices() {
+		displayInvoicesByStatus(InvoiceType.PURCHASE, InvoiceStatus.ReNotified);
+		displayInvoicesByStatus(InvoiceType.PURCHASE, InvoiceStatus.New);
+		displayInvoicesByStatus(InvoiceType.PURCHASE, InvoiceStatus.Seen);
+		displayInvoicesByStatus(InvoiceType.PURCHASE, InvoiceStatus.Approved);
+		
 		displayInvoicesByStatus(InvoiceType.SALES, InvoiceStatus.ReNotified);
 		displayInvoicesByStatus(InvoiceType.SALES, InvoiceStatus.New);
 		displayInvoicesByStatus(InvoiceType.SALES, InvoiceStatus.Seen);
@@ -59,7 +60,10 @@ public class MainPanel extends JPanel {
 		Collections.reverse(invoices);
 
 		for (Invoice element : invoices) {
-			purchaseIl.addInvoice(element);
+			if(type == InvoiceType.PURCHASE)
+				purchaseIl.addInvoice(element);
+			else
+				salesIl.addInvoice(element);
 		}
 	}
 

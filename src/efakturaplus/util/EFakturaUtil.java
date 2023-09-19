@@ -1,6 +1,5 @@
 package efakturaplus.util;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Flow.Subscriber;
-
-import javax.swing.text.DateFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,13 +26,6 @@ public class EFakturaUtil {
 
 	private String API_KEY = "";
 
-	// URI for an invoice [ xml ]
-	// QUERY: ?invoiceId=SOME_ID (19150969)
-	/*private final String getInvoiceURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/xml";
-
-	// URI for a list of ids [ json ]
-	private final String getInvoiceIDsURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/ids?status=";*/
-	
 	private String efakturaURI = "https://efaktura.mfin.gov.rs/api/publicApi/";
 	
 	private String invoiceXmlURI;
@@ -76,11 +66,7 @@ public class EFakturaUtil {
 
 			return res;
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
