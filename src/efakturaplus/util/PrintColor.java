@@ -1,6 +1,6 @@
 package efakturaplus.util;
 
-public enum Color {
+public enum PrintColor {
     //Color end string, color reset
     RESET("\033[0m"),
 
@@ -76,7 +76,7 @@ public enum Color {
 
     private final String code;
 
-    Color(String code) {
+    PrintColor(String code) {
         this.code = code;
     }
 

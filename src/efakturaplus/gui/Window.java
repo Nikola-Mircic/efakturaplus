@@ -42,7 +42,7 @@ public class Window extends JFrame {
 		this.setLayout(panels);
 		
 		this.keyPanel = new KeyPanel(this, WIDTH, HEIGHT);
-		this.mainPanel = new MainPanel(this, WIDTH, HEIGHT);
+		this.mainPanel = new MainPanel(this);
 		
 		this.add(keyPanel, "KEY_PANEL");
 		this.add(mainPanel, "MAIN_PANEL");
@@ -58,7 +58,7 @@ public class Window extends JFrame {
 
 	public void switchPanels() {
 		this.panels.show(this.getContentPane(), "MAIN_PANEL");
-		this.mainPanel.printInvoices();
+		this.mainPanel.printPurchaseInvoices();
 	}
 
 }

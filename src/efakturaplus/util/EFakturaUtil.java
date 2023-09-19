@@ -1,6 +1,5 @@
 package efakturaplus.util;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,13 +12,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Flow.Subscriber;
 
-import javax.swing.text.DateFormatter;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
+import efakturaplus.models.InvoiceType;
 import efakturaplus.models.User;
 
 public class EFakturaUtil {
@@ -28,13 +26,11 @@ public class EFakturaUtil {
 
 	private String API_KEY = "";
 
-	// URI for an invoice [ xml ]
-	// QUERY: ?invoiceId=SOME_ID (19150969)
-	private final String getInvoiceURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/xml";
-
-	// URI for a list of ids [ json ]
-	private final String getInvoiceIDsURI = "https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/ids?status=";
-
+	private String efakturaURI = "https://efaktura.mfin.gov.rs/api/publicApi/";
+	
+	private String invoiceXmlURI;
+	private String invoiceIdsURI;
+	
 	private EFakturaUtil(String API_KEY) {
 		this.API_KEY = API_KEY;
 	}
@@ -47,13 +43,18 @@ public class EFakturaUtil {
 		return instance;
 	}
 
-	private ArrayList<String> getIdsFromResponse(HttpResponse<String> response){
+	private ArrayList<String> getIdsFromResponse(InvoiceType type, HttpResponse<String> response){
 		ArrayList<String> ids = new ArrayList<>();
 
 		JSONObject object = new JSONObject(response.body());
-		JSONArray purchaseInvoiceIds = object.getJSONArray("PurchaseInvoiceIds");
-
-		purchaseInvoiceIds.toList().forEach((id) -> ids.add(id.toString()));
+		JSONArray invoiceIds;
+		
+		if(type == InvoiceType.SALES)
+			invoiceIds = object.getJSONArray("SalesInvoiceIds");
+		else
+			invoiceIds = object.getJSONArray("PurchaseInvoiceIds");
+		
+		invoiceIds.toList().forEach((id) -> ids.add(id.toString()));
 		return ids;
 	}
 
@@ -65,11 +66,7 @@ public class EFakturaUtil {
 
 			return res;
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -81,19 +78,65 @@ public class EFakturaUtil {
 				.GET()
 				.header("ApiKey", this.API_KEY)
 				.header("accept", "*/*")
-				.uri(URI.create(getInvoiceURI+"?invoiceId="+invoiceId))
+				.uri(URI.create(invoiceXmlURI+invoiceId))
 				.build();
 
 		HttpResponse<String> res = sendRequest(request);
 
 		Invoice invoice = new Invoice(invoiceId, res.body());
 
-		System.out.println("[Status] getInvoice("+invoiceId+") : " + Color.MAGENTA +res.statusCode() + Color.RESET);
+		System.out.println("[Status] getInvoice("+invoiceId+") : " + PrintColor.MAGENTA +res.statusCode() + PrintColor.RESET);
 
 		return invoice;
 	}
 
-	public ArrayList<String> getIdsList(InvoiceStatus status) {
+	public ArrayList<String> getIdsList(InvoiceType type, InvoiceStatus status) {
+		
+		HttpRequest getIDRequest = HttpRequest.newBuilder()
+				.POST(new BodyPublisher() {
+					@Override
+					public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
+						// TODO Auto-generated method stub
+					}
+					@Override
+					public long contentLength() {
+						// TODO Auto-generated method stub
+						return 0;
+					}
+				})
+				.header("ApiKey", this.API_KEY)
+				.header("accept", "text/plain")
+				.uri(URI.create(invoiceIdsURI))
+				.build();
+				
+
+		HttpResponse<String> res = sendRequest(getIDRequest);
+
+		ArrayList<String> ids = getIdsFromResponse(type, res);
+
+		System.out.println(ids);
+		System.out.println("[Status] getIdsList() : " + PrintColor.MAGENTA + res.statusCode() + PrintColor.RESET);
+
+		return ids;
+	}
+
+	public ArrayList<Invoice> getInvoices(InvoiceType type, InvoiceStatus status){
+		createURI(type, status);
+		
+		ArrayList<Invoice> list = new ArrayList<>();
+
+		ArrayList<String> ids = getIdsList(type, status);
+
+		for(String id: ids) {
+			Invoice inv = this.getInvoice(id);
+			inv.status = status;
+			list.add(inv);
+		}
+
+		return list;
+	}
+	
+	private void createURI(InvoiceType type, InvoiceStatus status) {
 		Date date = new Date();
 		
 		Calendar c = Calendar.getInstance();
@@ -110,45 +153,13 @@ public class EFakturaUtil {
 		String fromDateStr = "dateFrom=" + format.format(fromDate);
 		String toDateStr = "dateTo=" + format.format(date);
 		
-		HttpRequest getIDRequest = HttpRequest.newBuilder()
-				.POST(new BodyPublisher() {
-					@Override
-					public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
-						// TODO Auto-generated method stub
-					}
-					@Override
-					public long contentLength() {
-						// TODO Auto-generated method stub
-						return 0;
-					}
-				})
-				.header("ApiKey", this.API_KEY)
-				.header("accept", "text/plain")
-				.uri(URI.create(getInvoiceIDsURI + status + "&" + fromDateStr + "&" + toDateStr))
-				.build();
-				
-
-		HttpResponse<String> res = sendRequest(getIDRequest);
-
-		ArrayList<String> ids = getIdsFromResponse(res);
-
-		System.out.println(ids);
-		System.out.println("[Status] getIdsList() : " + Color.MAGENTA + res.statusCode() + Color.RESET);
-
-		return ids;
-	}
-
-	public ArrayList<Invoice> getInvoices(InvoiceStatus status){
-		ArrayList<Invoice> list = new ArrayList<>();
-
-		ArrayList<String> ids = getIdsList(status);
-
-		for(String id: ids) {
-			Invoice inv = this.getInvoice(id);
-			inv.status = status;
-			list.add(inv);
+		if(type == InvoiceType.PURCHASE) {
+			this.invoiceIdsURI = efakturaURI + "purchase-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceXmlURI = efakturaURI + "purchase-invoice/xml" + "?invoiceId=";
+		}else {
+			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceXmlURI = efakturaURI + "sales-invoice/xml" + "?invoiceId=";
 		}
-
-		return list;
+		
 	}
 }
