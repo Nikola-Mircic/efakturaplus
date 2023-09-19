@@ -24,7 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-import efakturaplus.models.Invoice;;
+import efakturaplus.models.Invoice;
+import efakturaplus.util.PrintColor;;
 
 public class InvoiceList extends JPanel {
 
@@ -34,7 +35,7 @@ public class InvoiceList extends JPanel {
 	
 	private JPanel invoiceDisplay;
 
-	public InvoiceList(int width, int height) {
+	public InvoiceList() {
 		this.setLayout(new BorderLayout());
 		
 		this.invoices = new ArrayList<>();
@@ -153,7 +154,7 @@ class InvoiceListItem implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if( this.equals(selectedInvoice) ) {
-			System.out.println(efakturaplus.util.Color.CYAN+"Loading PDF doucments..." + efakturaplus.util.Color.RESET);
+			System.out.println(PrintColor.CYAN+"Loading PDF doucments..." + PrintColor.RESET);
 			JFrame frame1 = new JFrame("PDF Document");
 			PDFDisplay pdfDisplay1 = new PDFDisplay(this.invoice.pdfInvoice);		
 			frame1.add(pdfDisplay1);

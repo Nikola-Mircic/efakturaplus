@@ -58,7 +58,7 @@ public class Window extends JFrame {
 
 	public void switchPanels() {
 		this.panels.show(this.getContentPane(), "MAIN_PANEL");
-		this.mainPanel.printInvoices();
+		this.mainPanel.printPurchaseInvoices();
 	}
 
 }

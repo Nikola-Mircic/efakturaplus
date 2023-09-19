@@ -21,7 +21,7 @@ import org.xml.sax.InputSource;
 
 import com.sun.pdfview.PDFFile;
 
-import efakturaplus.util.Color;
+import efakturaplus.util.PrintColor;
 
 public class Invoice {
 	public Party customer;
@@ -57,8 +57,8 @@ public class Invoice {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(Color.RED + "ERROR: ["+e.getClass()+"]"+"\u001B[0m" + Color.RESET);
-			System.out.println(Color.GREEN_BOLD + e.getMessage() + Color.RESET);
+			System.out.println(PrintColor.RED + "ERROR: ["+e.getClass()+"]"+"\u001B[0m" + PrintColor.RESET);
+			System.out.println(PrintColor.GREEN_BOLD + e.getMessage() + PrintColor.RESET);
 		}
 	}
 
