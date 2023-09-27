@@ -57,7 +57,7 @@ public class KeyPanel extends JPanel {
 				User.API_KEY = keyInput.getText();
 				System.out.println(User.API_KEY);
 
-				parent.switchPanels();
+				parent.showMainPanel();
 			}
 		});
 

@@ -2,9 +2,6 @@ package efakturaplus.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -17,13 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.FlowView;
 
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
@@ -74,9 +68,11 @@ public class MainPanel extends JPanel {
 	private void createNavigator() {
 		Image purchaseBtnImg = null;
 		Image salesBtnImg = null;
+		Image logoutImg = null;
 		try {
 			purchaseBtnImg = ImageIO.read(new File("icons/invoice-purchase.png"));
 			salesBtnImg = ImageIO.read(new File("icons/invoice-sales.png"));
+			logoutImg = ImageIO.read(new File("icons/logout.png"));
 			
 			//this.purchaseBtn.add(new JLabel("Sales"));
 		} catch (IOException e) {
@@ -104,7 +100,7 @@ public class MainPanel extends JPanel {
 		navigator.add(purchaseBtn, gbc);
 		
 		gbc.gridy = 1;
-		gbc.weighty = 1;
+		
 		
 		this.salesBtn = makeButton(salesBtnImg, "Sales", new ActionListener() {
 			@Override
@@ -114,6 +110,19 @@ public class MainPanel extends JPanel {
 		});
 		
 		navigator.add(salesBtn, gbc);
+		
+		JButton logout = makeButton(logoutImg, "Log out", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.showKeyPanel();
+			}
+		});
+		
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		gbc.weighty = 1;
+		
+		navigator.add(logout, gbc);
 		
 		this.add(navigator, BorderLayout.WEST);
 	}
