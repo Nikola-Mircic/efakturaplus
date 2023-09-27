@@ -168,11 +168,11 @@ class InvoiceListItem implements MouseListener{
 				frame2.setSize(700, 1000);
 				frame2.setVisible(true);
 			}
+			deselect(selectedInvoice);
 		}else {
 			if(selectedInvoice != null) 
 				deselect(selectedInvoice);
 			
-			selectedInvoice = this;
 			select(this);
 		}
 	}
@@ -180,12 +180,14 @@ class InvoiceListItem implements MouseListener{
 	private void select(InvoiceListItem item) {
 		item.bckgColor = borderColor;
 		item.fontColor = Color.BLACK;
+		selectedInvoice = this;
 		item.loadComponents();
 	}
 	
 	private void deselect(InvoiceListItem item) {
 		item.bckgColor = UIManager.getColor ( "Panel.background" );
 		item.fontColor = UIManager.getColor ( "Label.foreground" );
+		selectedInvoice = null;
 		item.loadComponents();
 	}
 	
