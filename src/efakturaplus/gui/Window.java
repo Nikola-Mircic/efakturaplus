@@ -56,9 +56,12 @@ public class Window extends JFrame {
 		this.setVisible(true);
 	}
 
-	public void switchPanels() {
+	public void showMainPanel() {
 		this.panels.show(this.getContentPane(), "MAIN_PANEL");
 		this.mainPanel.printPurchaseInvoices();
 	}
-
+	
+	public void showKeyPanel() {
+		this.panels.show(this.getContentPane(), "KEY_PANEL");
+	}
 }
