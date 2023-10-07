@@ -10,9 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -23,7 +25,8 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;
-import efakturaplus.util.PrintColor;;
+import efakturaplus.util.PrintColor;
+import efakturaplus.util.QRUtil;;
 
 public class InvoiceList extends JPanel {
 
@@ -224,6 +227,19 @@ class InvoiceListItem extends JPanel implements MouseListener{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				System.out.println(invoice);
+				QRUtil util = new QRUtil();
+				BufferedImage img = util.getQRCode(invoice);
+				
+				JFrame frame = new JFrame("Test");
+				
+				frame.setSize(300, 300);
+				frame.setLocationRelativeTo(InvoiceListItem.this);
+				
+				ImageIcon icon = new ImageIcon(img);
+				
+				frame.add(new JLabel(icon));
+				
+				frame.setVisible(true);
 			}
 		});
 		

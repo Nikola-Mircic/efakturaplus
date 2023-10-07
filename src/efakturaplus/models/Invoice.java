@@ -133,7 +133,7 @@ public class Invoice {
 		switch (node.getNodeName()) {
 		case "cbc:Name":
 			if(p.name == null)
-				p.name = node.getTextContent();
+				p.name = node.getTextContent().replace("\\", "");
 			break;
 		case "cbc:StreetName":
 			p.streetName = node.getTextContent();
