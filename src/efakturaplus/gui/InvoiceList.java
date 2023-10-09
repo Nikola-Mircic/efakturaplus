@@ -275,7 +275,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		
 		item.options.setVisible(false);
 		
-		Border border = BorderFactory.createMatteBorder(0, 4, 0, 0, borderColor);
+		Border border = BorderFactory.createMatteBorder(0, 4, 0, 0, item.borderColor);
 		item.setBorder(border);
 		
 		item.setColors();
