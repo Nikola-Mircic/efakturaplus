@@ -230,7 +230,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 				QRUtil util = new QRUtil();
 				BufferedImage img = util.getQRCode(invoice);
 				
-				JFrame frame = new JFrame("Test");
+				JFrame frame = new JFrame("Your QR code: ");
 				
 				frame.setSize(300, 300);
 				frame.setLocationRelativeTo(InvoiceListItem.this);

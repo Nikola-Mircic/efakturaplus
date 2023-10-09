@@ -104,7 +104,7 @@ public class QRUtil {
 		s.add("I:RSD"+df.format(inv.payableAmount));
 		s.add("SF:289");
 		
-		if(inv.paymentId != null || !inv.paymentId.equals("")) {
+		if(inv.paymentId != null) {
 			String ro = "RO:";
 			
 			if(inv.paymentMod == null || inv.paymentMod.equals("")) {
