@@ -86,11 +86,12 @@ public class Invoice {
 		 * PAYMENT ID PARSING
 		 */
 		Node paymentIdNode = doc.getElementsByTagName("cbc:PaymentID").item(0);
-		String idString = paymentIdNode.getTextContent();
+		if(paymentIdNode != null) {
+			String idString = paymentIdNode.getTextContent();
 
-		this.paymentMod = idString.substring(4, 6);
-		this.paymentId = idString.substring(8);
-
+			this.paymentMod = idString.substring(4, 6);
+			this.paymentId = idString.substring(8);
+		}
 		/*
 		 * PARSING PAYEE FINANCIAL ACCOUNTS
 		 */
@@ -133,19 +134,19 @@ public class Invoice {
 		switch (node.getNodeName()) {
 		case "cbc:Name":
 			if(p.name == null)
-				p.name = node.getTextContent();
+				p.name = toLatin(node.getTextContent().replace("\\", ""));
 			break;
 		case "cbc:StreetName":
-			p.streetName = node.getTextContent();
+			p.streetName = toLatin(node.getTextContent());
 			break;
 		case "cbc:CityName":
-			p.cityName = node.getTextContent();
+			p.cityName = toLatin(node.getTextContent());
 			break;
 		case "cbc:PostalZone":
-			p.postalZone = node.getTextContent();
+			p.postalZone = toLatin(node.getTextContent());
 			break;
 		case "cbc:IdentificationCode":
-			p.countryIdCode = node.getTextContent();
+			p.countryIdCode = toLatin(node.getTextContent());
 			break;
 		default:
 			NodeList childs = node.getChildNodes();
@@ -155,7 +156,28 @@ public class Invoice {
 			break;
 		}
 	}
-
+	
+	
+	private String toLatin(String text) {
+		StringBuilder res = new StringBuilder(text);
+		
+		String[] latin = {" ", "a","b","v","g","d","dj","e","ž","z","i","j","k","l","lj","m","n","nj","o","p","r","s","t","ć","u","f","h","c","č","dž","š"};
+		char[] cyrillic = {' ','а','б','в','г','д','ђ','е','ж','з','и','ј','к','л','љ','м','н','њ','о','п','р','с','т','ћ','у','ф','х','ц','ч','џ','ш'};
+		
+		text = text.toLowerCase();
+		
+		for(int i =0; i<text.length(); ++i) {
+			for(int j=0;j<cyrillic.length; ++j) {
+				if(text.charAt(i) == cyrillic[j])
+					res.replace(i, i+1, latin[j]);
+			}
+			
+		}
+		
+		text = res.toString();
+		
+		return text.toUpperCase();
+		}
 
 	@Override
 	public String toString() {
