@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -56,7 +57,7 @@ public class KeyPanel extends JPanel {
 				User.API_KEY = keyInput.getText();
 				System.out.println(User.API_KEY);
 
-				parent.switchPanels();
+				parent.showMainPanel();
 			}
 		});
 

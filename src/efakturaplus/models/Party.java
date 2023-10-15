@@ -11,5 +11,8 @@ public class Party{
 	public String toString() {
 		return name+", "+streetName;
 	}
-
+	
+	public String getQRCodeData() {
+		return name+" "+streetName+" "+postalZone+" "+cityName;
+	}
 }

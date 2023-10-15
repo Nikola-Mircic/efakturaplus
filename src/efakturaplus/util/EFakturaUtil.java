@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -57,7 +58,7 @@ public class EFakturaUtil {
 		invoiceIds.toList().forEach((id) -> ids.add(id.toString()));
 		return ids;
 	}
-
+	
 	private HttpResponse<String> sendRequest(HttpRequest request) {
 		HttpClient client = HttpClient.newHttpClient();
 		try {
@@ -121,7 +122,7 @@ public class EFakturaUtil {
 	}
 
 	public ArrayList<Invoice> getInvoices(InvoiceType type, InvoiceStatus status){
-		createURI(type, status);
+		createInvoicURI(type, status);
 		
 		ArrayList<Invoice> list = new ArrayList<>();
 
@@ -130,20 +131,21 @@ public class EFakturaUtil {
 		for(String id: ids) {
 			Invoice inv = this.getInvoice(id);
 			inv.status = status;
+			inv.type = type;
 			list.add(inv);
 		}
 
 		return list;
 	}
 	
-	private void createURI(InvoiceType type, InvoiceStatus status) {
+	private void createInvoicURI(InvoiceType type, InvoiceStatus status) {
 		Date date = new Date();
 		
 		Calendar c = Calendar.getInstance();
 		
 		c.setTime(date);
 		
-		c.add(Calendar.MONTH, -1);
+		c.add(Calendar.MONTH, -3);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
 		Date fromDate = c.getTime();
@@ -160,6 +162,26 @@ public class EFakturaUtil {
 			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
 			this.invoiceXmlURI = efakturaURI + "sales-invoice/xml" + "?invoiceId=";
 		}
+	}
+	
+	public void approveOrReject(Invoice invoice, boolean approve) {
+		JSONObject object = new JSONObject();
+
+		object.append("invoiceId", invoice.id);
+		object.append("accepted", approve);
+		object.append("comment", "");
 		
+		String reqestBody = object.toString();
+		
+		HttpRequest approveOrReject = HttpRequest.newBuilder()
+				.POST(BodyPublishers.ofString(reqestBody))
+				.header("ApiKey", this.API_KEY)
+				.header("accept", "text/plain")
+				.uri(URI.create("https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/acceptRejectPurchaseInvoice"))
+				.build();
+		
+		HttpResponse<String> res = sendRequest(approveOrReject);
+		
+		System.out.println(res.body());
 	}
 }
