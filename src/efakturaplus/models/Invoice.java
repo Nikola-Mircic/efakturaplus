@@ -24,6 +24,8 @@ import com.sun.pdfview.PDFFile;
 import efakturaplus.util.PrintColor;
 
 public class Invoice {
+	public String id;
+	
 	public Party customer;
 	public Party supplier;
 
@@ -38,11 +40,14 @@ public class Invoice {
 	public double payableAmount;
 
 	public InvoiceStatus status;
+	public InvoiceType type;
 	
 	public PDFFile pdfInvoice;
 	public PDFFile pdfAttachment;
 
 	public Invoice(String id, String source) {
+		this.id = id;
+		
 		supplier = new Party();
 		customer = new Party();
 

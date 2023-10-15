@@ -25,6 +25,8 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;
+import efakturaplus.models.InvoiceType;
+import efakturaplus.util.EFakturaUtil;
 import efakturaplus.util.PrintColor;
 import efakturaplus.util.QRUtil;;
 
@@ -197,10 +199,8 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.options = new JPanel();
 		
 		JButton details = new JButton("Details");
-		JButton pay = new JButton("Pay");
 		
 		details.setPreferredSize(new Dimension(150, 30));
-		pay.setPreferredSize(new Dimension(150, 30));
 		
 		details.addActionListener(new ActionListener() {
 			@Override
@@ -222,29 +222,47 @@ class InvoiceListItem extends JPanel implements MouseListener{
 			}
 		});
 		
-		pay.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println(invoice);
-				QRUtil util = new QRUtil();
-				BufferedImage img = util.getQRCode(invoice);
-				
-				JFrame frame = new JFrame("Your QR code: ");
-				
-				frame.setSize(300, 300);
-				frame.setLocationRelativeTo(InvoiceListItem.this);
-				
-				ImageIcon icon = new ImageIcon(img);
-				
-				frame.add(new JLabel(icon));
-				
-				frame.setVisible(true);
-			}
-		});
-		
 		options.add(details);
-		options.add(pay);
+		
+		if(invoice.type == InvoiceType.PURCHASE) {
+			JButton pay = new JButton("Pay");
+			JButton approve = new JButton("Approve");
+			
+			pay.setPreferredSize(new Dimension(150, 30));
+			approve.setPreferredSize(new Dimension(150, 30));
+			
+			pay.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					System.out.println(invoice);
+					QRUtil util = new QRUtil();
+					BufferedImage img = util.getQRCode(invoice);
+					
+					JFrame frame = new JFrame("Your QR code: ");
+					
+					frame.setSize(300, 300);
+					frame.setLocationRelativeTo(InvoiceListItem.this);
+					
+					ImageIcon icon = new ImageIcon(img);
+					
+					frame.add(new JLabel(icon));
+					
+					frame.setVisible(true);
+				}
+			});
+			
+			approve.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					approveOrReject(getFocusTraversalKeysEnabled());
+				}
+			});
+			
+			options.add(pay);
+			options.add(approve);
+		}
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -279,6 +297,17 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		item.setBorder(border);
 		
 		item.setColors();
+	}
+	
+	private void approveOrReject(boolean approve) {
+		EFakturaUtil util = EFakturaUtil.getInstance();
+		
+		util.approveOrReject(this.invoice, approve);
+		
+		selectBorderColor();
+		
+		Border border = BorderFactory.createMatteBorder(0, 4, 0, 0, borderColor);
+		InvoiceListItem.this.setBorder(border);
 	}
 	
 	@Override
