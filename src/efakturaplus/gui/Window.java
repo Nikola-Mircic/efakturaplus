@@ -48,9 +48,9 @@ public class Window extends JFrame {
 		this.add(mainPanel, "MAIN_PANEL");
 		
 		if(User.API_KEY == "") {
-			panels.show(this.getContentPane(), "KEY_PANEL");
+			showKeyPanel();
 		}else {
-			panels.show(this.getContentPane(), "MAIN_PANEL");
+			showMainPanel();
 		}
 
 		this.setVisible(true);

@@ -3,6 +3,7 @@ package efakturaplus.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -241,12 +242,39 @@ class InvoiceListItem extends JPanel implements MouseListener{
 					
 					JFrame frame = new JFrame("Your QR code: ");
 					
-					frame.setSize(300, 300);
+					frame.setSize(300, 350);
 					frame.setLocationRelativeTo(InvoiceListItem.this);
 					
 					ImageIcon icon = new ImageIcon(img);
 					
+					JButton ok = new JButton("OK");
+					ok.setSize(100, 50);
+					
+					ok.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							approveOrReject(true);
+						}
+					});
+					
+					JButton cancel = new JButton("Cancel");
+					cancel.setSize(100, 50);
+					
+					cancel.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							frame.dispose();
+						}
+					});
+					
+					frame.getContentPane().setLayout(new FlowLayout());
+					
 					frame.add(new JLabel(icon));
+					
+					frame.add(ok);
+					frame.add(cancel);
 					
 					frame.setVisible(true);
 				}
@@ -256,7 +284,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					approveOrReject(getFocusTraversalKeysEnabled());
+					approveOrReject(true);
 				}
 			});
 			
