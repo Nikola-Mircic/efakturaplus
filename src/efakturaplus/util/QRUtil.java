@@ -92,8 +92,6 @@ public class QRUtil {
 			supplierData = supplierData.substring(0, 70);
 		}
 		
-		supplierData = supplierData.replace("\"", "“");
-		
 		s.add("N:"+supplierData);
 		
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols();

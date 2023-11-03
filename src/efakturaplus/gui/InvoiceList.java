@@ -3,6 +3,7 @@ package efakturaplus.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -25,6 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;
+import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
 import efakturaplus.util.EFakturaUtil;
 import efakturaplus.util.PrintColor;
@@ -52,27 +55,48 @@ public class InvoiceList extends JPanel {
 	}
 
 	public void addInvoice(Invoice invoice) {
+		for(InvoiceListItem inv : invoices) {
+			if(inv.invoice.id.equals(invoice.id))
+				return;
+		}
+	
 		InvoiceListItem item = new InvoiceListItem(invoice);
 		
-		int n = this.invoices.size();
-	
-		GridBagConstraints constr = new GridBagConstraints();
-		constr.gridx = 0;
-		constr.gridy = n*45;
-        constr.anchor = GridBagConstraints.FIRST_LINE_START;
-        constr.weightx = 1.0;
-        constr.weighty = 0.0;
-		constr.fill = GridBagConstraints.HORIZONTAL;
-		
-		if(n != 0)
-			this.layout.setConstraints(this.invoices.get(n-1), constr);
-		
-		constr.weighty = 1.0;
-		this.invoiceDisplay.add(item, constr);
-		
 		this.invoices.add(item);
-	}
+		
+		this.invoices.sort(new Comparator<InvoiceListItem>() {
 
+			@Override
+			public int compare(InvoiceListItem item1, InvoiceListItem item2) {
+				return item2.invoice.deliveryDate.compareTo(item1.invoice.deliveryDate);
+			}
+		});
+		
+		printInvoices();
+	}
+	
+	public void printInvoices() {
+		this.invoiceDisplay.removeAll();
+		
+		int n = this.invoices.size();
+		GridBagConstraints constr = new GridBagConstraints();
+		
+		for(int i=0; i<n; ++i) {
+			constr.gridx = 0;
+			constr.gridy = i*45;
+	        constr.anchor = GridBagConstraints.FIRST_LINE_START;
+	        constr.weightx = 1.0;
+	        constr.weighty = 0.0;
+			constr.fill = GridBagConstraints.HORIZONTAL;
+			
+			this.invoiceDisplay.add(this.invoices.get(i), constr);
+		}
+		
+		if(n != 0) {
+			constr.weighty = 1.0;
+			this.layout.setConstraints(this.invoices.get(n-1), constr);
+		}
+	}
 }
 
 class InvoiceListItem extends JPanel implements MouseListener{
@@ -81,7 +105,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	
 	private static InvoiceListItem selectedInvoice = null;
 
-	private Invoice invoice;
+	public Invoice invoice;
 
 	private Color borderColor;
 	private Color fontColor;
@@ -241,12 +265,39 @@ class InvoiceListItem extends JPanel implements MouseListener{
 					
 					JFrame frame = new JFrame("Your QR code: ");
 					
-					frame.setSize(300, 300);
+					frame.setSize(300, 350);
 					frame.setLocationRelativeTo(InvoiceListItem.this);
 					
 					ImageIcon icon = new ImageIcon(img);
 					
+					JButton ok = new JButton("OK");
+					ok.setSize(100, 50);
+					
+					ok.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							approveOrReject(true);
+						}
+					});
+					
+					JButton cancel = new JButton("Cancel");
+					cancel.setSize(100, 50);
+					
+					cancel.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							frame.dispose();
+						}
+					});
+					
+					frame.getContentPane().setLayout(new FlowLayout());
+					
 					frame.add(new JLabel(icon));
+					
+					frame.add(ok);
+					frame.add(cancel);
 					
 					frame.setVisible(true);
 				}
@@ -256,7 +307,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					approveOrReject(getFocusTraversalKeysEnabled());
+					approveOrReject(true);
 				}
 			});
 			
