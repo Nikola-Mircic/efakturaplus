@@ -1,7 +1,5 @@
 package efakturaplus.gui;
 
-import java.awt.LayoutManager;
-
 import javax.swing.JPanel;
 
 public class InvoicePanel extends JPanel {

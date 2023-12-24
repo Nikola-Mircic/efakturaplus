@@ -1,29 +1,23 @@
 package efakturaplus.util;
 
-import java.awt.Image;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
-import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Locale;
-import java.util.concurrent.Flow.Subscriber;
 
 import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
-import ch.randelshofer.util.ArrayUtil;
 import efakturaplus.models.Invoice;
 
 public class QRUtil {
@@ -112,6 +106,8 @@ public class QRUtil {
 			}
 			
 			ro+=inv.paymentId;
+			
+			s.add(ro);
 		}
 		
 		return String.join("|", s);
