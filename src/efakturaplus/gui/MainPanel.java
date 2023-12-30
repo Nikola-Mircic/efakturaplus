@@ -151,7 +151,7 @@ public class MainPanel extends JPanel {
 	}
 
 	public void printPurchaseInvoices() {
-		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
+		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.Reminded, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Rejected, InvoiceStatus.Approved};
 		displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
 		
 		//InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
@@ -174,8 +174,6 @@ public class MainPanel extends JPanel {
 					salesIl.addInvoice(element);
 			}
 		}
-		
-		
 	}
 
 }

@@ -145,7 +145,7 @@ public class EFakturaUtil {
 		
 		c.setTime(date);
 		
-		c.add(Calendar.MONTH, -3);
+		c.add(Calendar.MONTH, -5);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
 		Date fromDate = c.getTime();
@@ -166,22 +166,28 @@ public class EFakturaUtil {
 	
 	public void approveOrReject(Invoice invoice, boolean approve) {
 		JSONObject object = new JSONObject();
-
-		object.append("invoiceId", invoice.id);
-		object.append("accepted", approve);
-		object.append("comment", "");
+		
+		System.out.println("ID: "+ invoice.id);
+		
+		object.put("invoiceId", invoice.id);
+		object.put("accepted", approve);
+		object.put("comment", "");
 		
 		String reqestBody = object.toString();
+		System.out.println(reqestBody);
 		
 		HttpRequest approveOrReject = HttpRequest.newBuilder()
 				.POST(BodyPublishers.ofString(reqestBody))
-				.header("ApiKey", this.API_KEY)
 				.header("accept", "text/plain")
+				.header("ApiKey", this.API_KEY)
+				//"Content-Type: application/json"
+				.header("Content-Type", "application/json")
 				.uri(URI.create("https://efaktura.mfin.gov.rs/api/publicApi/purchase-invoice/acceptRejectPurchaseInvoice"))
 				.build();
 		
 		HttpResponse<String> res = sendRequest(approveOrReject);
 		
-		System.out.println(res.body());
+		
+		System.out.println("["+res.statusCode()+"] "+res.body());
 	}
 }

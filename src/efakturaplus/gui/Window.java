@@ -47,11 +47,7 @@ public class Window extends JFrame {
 		this.add(keyPanel, "KEY_PANEL");
 		this.add(mainPanel, "MAIN_PANEL");
 		
-		if(User.API_KEY == "") {
-			showKeyPanel();
-		}else {
-			showMainPanel();
-		}
+		showKeyPanel();
 
 		this.setVisible(true);
 	}
@@ -63,5 +59,21 @@ public class Window extends JFrame {
 	
 	public void showKeyPanel() {
 		this.panels.show(this.getContentPane(), "KEY_PANEL");
+	}
+
+	public KeyPanel getKeyPanel() {
+		return keyPanel;
+	}
+
+	public void setKeyPanel(KeyPanel keyPanel) {
+		this.keyPanel = keyPanel;
+	}
+
+	public MainPanel getMainPanel() {
+		return mainPanel;
+	}
+
+	public void setMainPanel(MainPanel mainPanel) {
+		this.mainPanel = mainPanel;
 	}
 }
