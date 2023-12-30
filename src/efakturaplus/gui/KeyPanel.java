@@ -155,11 +155,16 @@ public class KeyPanel extends JPanel {
 		}
 		else {
 			try {
-				System.out.println("Decrypted: "+decryptData());
+				String data = decryptData();
+				System.out.println("Decrypted: "+data);
+				
+				User.API_KEY = data;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		parent.showMainPanel();
 	}
 	
 	private void encryptData() throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -198,11 +203,9 @@ public class KeyPanel extends JPanel {
 	    try (FileInputStream fileIn = new FileInputStream("user.enc")) {
 	        byte[] fileIv = new byte[16];
 	        byte[] salt = new byte[8];
-	        byte[] data = new byte[16];
 	        
 	        fileIn.read(fileIv);
 	        fileIn.read(salt);
-	        fileIn.read(data);
 	        
 	        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 	        KeySpec spec = new PBEKeySpec(passInput.getPassword(), salt, 65536, 256);
@@ -213,7 +216,10 @@ public class KeyPanel extends JPanel {
 	        
 	        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	        cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(fileIv));
-	        String plaintext = new String(cipher.doFinal(data));
+	        
+	        CipherInputStream cis = new CipherInputStream(fileIn, cipher);
+	        
+	        String plaintext = new String(cis.readAllBytes());
 	        
 	        content = plaintext;
 
