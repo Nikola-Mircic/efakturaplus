@@ -60,4 +60,20 @@ public class Window extends JFrame {
 	public void showKeyPanel() {
 		this.panels.show(this.getContentPane(), "KEY_PANEL");
 	}
+
+	public KeyPanel getKeyPanel() {
+		return keyPanel;
+	}
+
+	public void setKeyPanel(KeyPanel keyPanel) {
+		this.keyPanel = keyPanel;
+	}
+
+	public MainPanel getMainPanel() {
+		return mainPanel;
+	}
+
+	public void setMainPanel(MainPanel mainPanel) {
+		this.mainPanel = mainPanel;
+	}
 }

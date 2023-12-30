@@ -167,6 +167,14 @@ public class KeyPanel extends JPanel {
 		parent.showMainPanel();
 	}
 	
+	private boolean validateInput() {
+		boolean valid = true;
+		
+		
+		
+		return valid;
+	}
+	
 	private void encryptData() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[8];
