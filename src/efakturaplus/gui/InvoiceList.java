@@ -18,7 +18,6 @@ import java.util.Comparator;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,7 +26,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;
-import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
 import efakturaplus.util.EFakturaUtil;
 import efakturaplus.util.PrintColor;
