@@ -1,5 +1,6 @@
 package efakturaplus.models;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.ByteBuffer;
@@ -44,9 +45,13 @@ public class Invoice {
 	
 	public PDFFile pdfInvoice;
 	public PDFFile pdfAttachment;
+	
+	private String source;
 
 	public Invoice(String id, String source) {
 		this.id = id;
+		
+		this.source = source;
 		
 		supplier = new Party();
 		customer = new Party();
@@ -93,9 +98,14 @@ public class Invoice {
 		Node paymentIdNode = doc.getElementsByTagName("cbc:PaymentID").item(0);
 		if(paymentIdNode != null) {
 			String idString = paymentIdNode.getTextContent();
-
-			this.paymentMod = idString.substring(4, 6);
-			this.paymentId = idString.substring(8);
+			
+			if(idString.contains("mod")) {
+				this.paymentMod = idString.substring(4, 6);
+				this.paymentId = idString.substring(8);
+			}else {
+				this.paymentMod = "";
+				this.paymentId = idString;
+			}
 		}
 		/*
 		 * PARSING PAYEE FINANCIAL ACCOUNTS
@@ -122,6 +132,16 @@ public class Invoice {
 		 * */
 		Node DocumentPDF = doc.getElementsByTagName("env:DocumentPdf").item(0);
 		byte[] documentBytes = Base64.getDecoder().decode(DocumentPDF.getTextContent().getBytes("UTF-8"));
+		/*FileOutputStream fos = new FileOutputStream(this.supplier.name+".pdf");
+		fos.write(documentBytes);
+		fos.close();
+		
+		fos = new FileOutputStream(this.supplier.name+".xml");
+		fos.write(this.source.getBytes());
+		
+		fos.close();*/
+		
+		
 		this.pdfInvoice = new PDFFile(ByteBuffer.wrap(documentBytes));
 		System.out.println(this.pdfInvoice.getNumPages());
 		

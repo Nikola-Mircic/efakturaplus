@@ -1,5 +1,6 @@
 package efakturaplus.util;
 
+import java.io.FileOutputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -85,7 +86,7 @@ public class EFakturaUtil {
 		HttpResponse<String> res = sendRequest(request);
 
 		Invoice invoice = new Invoice(invoiceId, res.body());
-
+		
 		System.out.println("[Status] getInvoice("+invoiceId+") : " + PrintColor.MAGENTA +res.statusCode() + PrintColor.RESET);
 
 		return invoice;
@@ -156,10 +157,10 @@ public class EFakturaUtil {
 		String toDateStr = "dateTo=" + format.format(date);
 		
 		if(type == InvoiceType.PURCHASE) {
-			this.invoiceIdsURI = efakturaURI + "purchase-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceIdsURI = efakturaURI + "purchase-invoice/ids?status=" + status ;//+ "&" + fromDateStr + "&" + toDateStr;
 			this.invoiceXmlURI = efakturaURI + "purchase-invoice/xml" + "?invoiceId=";
 		}else {
-			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status ;//+ "&" + fromDateStr + "&" + toDateStr;
 			this.invoiceXmlURI = efakturaURI + "sales-invoice/xml" + "?invoiceId=";
 		}
 	}

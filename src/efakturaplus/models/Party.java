@@ -13,6 +13,6 @@ public class Party{
 	}
 	
 	public String getQRCodeData() {
-		return name+" "+streetName+" "+postalZone+" "+cityName;
+		return name+"\n"+streetName+"\n"+postalZone+" "+cityName;
 	}
 }
