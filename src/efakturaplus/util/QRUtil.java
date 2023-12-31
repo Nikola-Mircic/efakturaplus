@@ -105,7 +105,7 @@ public class QRUtil {
 				ro+=inv.paymentMod;
 			}
 			
-			ro+=inv.paymentId;
+			ro+=inv.paymentId.replace("-", "");
 			
 			s.add(ro);
 		}
