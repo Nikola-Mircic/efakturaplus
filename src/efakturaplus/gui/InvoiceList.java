@@ -276,6 +276,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							approveOrReject(true);
+							frame.dispose();
 						}
 					});
 					
