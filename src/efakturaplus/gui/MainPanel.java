@@ -41,6 +41,8 @@ public class MainPanel extends JPanel {
 	
 	private InvoiceList purchaseIl;
 	private InvoiceList salesIl;
+	
+	private StatisticsPanel statsPanel;
 
 	public MainPanel(Window parent) {
 		this.parent = parent;
@@ -57,6 +59,9 @@ public class MainPanel extends JPanel {
 		
 		salesIl = new InvoiceList();
 		dataPanel.add(salesIl, "SALES");
+		
+		statsPanel = new StatisticsPanel();
+		dataPanel.add(statsPanel, "STATS");
 		
 		dataPanelLayout.show(dataPanel, "PURCHASE");
 		
@@ -117,7 +122,7 @@ public class MainPanel extends JPanel {
 		this.statsBtn = makeButton(statsButtonImg, "Statistics", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dataPanelLayout.show(dataPanel, "PURCHASE");
+				dataPanelLayout.show(dataPanel, "STATS");
 			}
 		});
 		
