@@ -2,9 +2,13 @@ package efakturaplus.gui;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 import javax.swing.JPanel;
+
+import ch.randelshofer.util.ArrayUtil;
 
 public class StatisticsPanel extends JPanel {
 
@@ -25,9 +29,33 @@ public class StatisticsPanel extends JPanel {
 			
 		Random rand = new Random();
 		
-		for(int i=0;i<20;++i) {
-			scores.add(Math.sqrt(i)*3);
+		for(int i=1;i<20;++i) {
+			scores.add(1.0*i*i);
 		}
+		
+		scaleValues(scores);
+	}
+	
+	private void scaleValues(ArrayList<Double> values) {
+		double minimum = Collections.min(values);
+		double maximum = Collections.max(values);
+		
+		// TODO: Scaling
+		
+		if(minimum == maximum) {
+			minimum = 1.0;
+			maximum = 1.0;
+		}
+		
+		for(int i =  0; i<values.size(); ++i) {
+			double d = values.get(i);
+			
+			values.set(i, (d-minimum)/(maximum-minimum)*MAX_SCORE);
+		}
+		
+		System.out.println("");
+		
+		System.out.println(Arrays.toString(values.toArray()));
 	}
 	
 	@Override

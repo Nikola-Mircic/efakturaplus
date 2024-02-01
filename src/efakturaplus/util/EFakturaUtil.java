@@ -146,7 +146,7 @@ public class EFakturaUtil {
 		
 		c.setTime(date);
 		
-		c.add(Calendar.MONTH, -5);
+		c.add(Calendar.MONTH, -1);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
 		Date fromDate = c.getTime();
