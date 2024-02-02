@@ -227,5 +227,11 @@ public class Invoice {
 		return format.format(new Date());
 	}
 
+	public static Date getDate(Invoice inv) {
+		return inv.deliveryDate;
+	}
 
+	public static double getAmount(Invoice inv) {
+		return inv.payableAmount;
+	}
 }
