@@ -97,9 +97,9 @@ public class StatisticsPanel extends JPanel {
 			int y2 = graphPoints.get(i + 1).y;
 			g2.drawLine(x1, y1, x2, y2);
 			
-			g2.fillPolygon(new int[] {x1, x1, x2, x2},
+			/*g2.fillPolygon(new int[] {x1, x1, x2, x2},
 					   	   new int[] {y1, BORDER_GAP+(int)DATA_HEIGHT, BORDER_GAP+(int)DATA_HEIGHT, y2},
-					   	   4);
+					   	   4);*/
 		}
 
 		g2.setStroke(oldStroke);
@@ -158,20 +158,25 @@ class Plot {
 		c.add(Calendar.MONTH, -1);
 
 		Date refDate = c.getTime();
-
+		
+		Collections.reverse(dates);
+		Collections.reverse(values);
+		
+		for(int i=1; i<values.size(); ++i) {
+			values.set(i, values.get(i-1)+values.get(i));
+		}
+		
 		double maxValue = Collections.max(values);
 		double minValue = Collections.min(values);
 
 		long dateDiff = (new Date()).getTime() - refDate.getTime();
 		dateDiff = TimeUnit.DAYS.convert(dateDiff, TimeUnit.MILLISECONDS);
 
-		double valuesDiff = maxValue - minValue;
-
 		for (int i = 0; i < dates.size(); ++i) {
 			long diff = dates.get(i).getTime() - refDate.getTime();
 			diff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-			points.add(new Pair<Double, Double>(1.0 * diff / dateDiff, values.get(i) / valuesDiff));
+			points.add(new Pair<Double, Double>(1.0 * diff / dateDiff, values.get(i) / maxValue));
 		}
 		
 		points.sort(new Comparator<Pair<Double, Double>>() {
