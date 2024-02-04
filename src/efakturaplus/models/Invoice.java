@@ -39,6 +39,8 @@ public class Invoice {
 
 	public double taxExAmount; // Tax exclusive amount
 	public double payableAmount;
+	
+	public String currency;
 
 	public InvoiceStatus status;
 	public InvoiceType type;
@@ -127,6 +129,7 @@ public class Invoice {
 		this.taxExAmount = Double.parseDouble(TaxExAmount.getTextContent());
 		this.payableAmount = Double.parseDouble(PayableAmount.getTextContent());
 		
+		this.currency = PayableAmount.getAttributes().getNamedItem("currencyID").getNodeValue();
 		/*
 		 * PARSING PDF INVOICE AND PDF ATTACHMENT
 		 * */
