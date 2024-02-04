@@ -171,8 +171,8 @@ public class MainPanel extends JPanel {
 		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.Reminded, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Rejected, InvoiceStatus.Approved};
 		displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
 		
-		//InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
-		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified};
+		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
+		//InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified};
 
 		displayInvoicesByStatus(InvoiceType.SALES, sStatusArr);
 	}
@@ -185,12 +185,15 @@ public class MainPanel extends JPanel {
 			Collections.reverse(invoices);
 
 			for (Invoice element : invoices) {
-				if(type == InvoiceType.PURCHASE)
+				if(type == InvoiceType.PURCHASE) {
 					purchaseIl.addInvoice(element);
-				else
+					statsPanel.addInvoice(element);
+				}else
 					salesIl.addInvoice(element);
 			}
 		}
+		
+		statsPanel.updatePlot();
 	}
 
 }
