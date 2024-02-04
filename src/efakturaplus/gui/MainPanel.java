@@ -37,9 +37,12 @@ public class MainPanel extends JPanel {
 	private JPanel navigator;
 	private JButton purchaseBtn;
 	private JButton salesBtn;
+	private JButton statsBtn;
 	
 	private InvoiceList purchaseIl;
 	private InvoiceList salesIl;
+	
+	private StatisticsPanel statsPanel;
 
 	public MainPanel(Window parent) {
 		this.parent = parent;
@@ -57,6 +60,9 @@ public class MainPanel extends JPanel {
 		salesIl = new InvoiceList();
 		dataPanel.add(salesIl, "SALES");
 		
+		statsPanel = new StatisticsPanel();
+		dataPanel.add(statsPanel, "STATS");
+		
 		dataPanelLayout.show(dataPanel, "PURCHASE");
 		
 		this.add(dataPanel, BorderLayout.CENTER);
@@ -68,10 +74,12 @@ public class MainPanel extends JPanel {
 	private void createNavigator() {
 		Image purchaseBtnImg = null;
 		Image salesBtnImg = null;
+		Image statsButtonImg = null;
 		Image logoutImg = null;
 		try {
 			purchaseBtnImg = ImageIO.read(new File("icons/invoice-purchase.png"));
 			salesBtnImg = ImageIO.read(new File("icons/invoice-sales.png"));
+			statsButtonImg = ImageIO.read(new File("icons/stats.png"));
 			logoutImg = ImageIO.read(new File("icons/logout.png"));
 			
 			//this.purchaseBtn.add(new JLabel("Sales"));
@@ -99,9 +107,8 @@ public class MainPanel extends JPanel {
 		
 		navigator.add(purchaseBtn, gbc);
 		
+		
 		gbc.gridy = 1;
-		
-		
 		this.salesBtn = makeButton(salesBtnImg, "Sales", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -111,6 +118,16 @@ public class MainPanel extends JPanel {
 		
 		navigator.add(salesBtn, gbc);
 		
+		gbc.gridy = 2;
+		this.statsBtn = makeButton(statsButtonImg, "Statistics", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dataPanelLayout.show(dataPanel, "STATS");
+			}
+		});
+		
+		navigator.add(statsBtn, gbc);
+		
 		JButton logout = makeButton(logoutImg, "Log out", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -118,7 +135,7 @@ public class MainPanel extends JPanel {
 			}
 		});
 		
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.LAST_LINE_END;
 		gbc.weighty = 1;
 		

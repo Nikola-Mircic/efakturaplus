@@ -26,6 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import efakturaplus.models.Invoice;
+import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
 import efakturaplus.util.EFakturaUtil;
 import efakturaplus.util.PrintColor;
@@ -350,6 +351,9 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	}
 	
 	private void approveOrReject(boolean approve) {
+		if(approve)
+			this.invoice.status = InvoiceStatus.Approved;
+		
 		EFakturaUtil util = EFakturaUtil.getInstance();
 		
 		util.approveOrReject(this.invoice, approve);

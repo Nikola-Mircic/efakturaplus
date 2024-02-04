@@ -4,9 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.security.AlgorithmParameters;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -15,31 +12,18 @@ import java.security.spec.KeySpec;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import sun.misc.*;
-
-import java.util.Arrays;
-import java.util.Base64;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-import ch.randelshofer.util.ArrayUtil;
 import efakturaplus.models.User;
 
 public class KeyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private String password;
-	private byte[] iv;
 	
 	JLabel keyLabel, passLabel, passLabel2;
 	JTextField keyInput;
@@ -47,14 +31,37 @@ public class KeyPanel extends JPanel {
 
 	private Window parent;
 	
-	private boolean registeredUser;
-
 	public KeyPanel(Window parent, int width, int height) {
 		this.parent = parent;
 		this.setSize(width, height);
 		this.setLayout(null);
 		
+		loadAPIKey();
 		addComponents(width, height);
+	}
+	
+	private void loadAPIKey() {
+		try {	
+			File f = new File("user.enc");
+			
+			if(f.exists()) {
+				FileInputStream fis = new FileInputStream(f);
+				BufferedReader br = new BufferedReader(new FileReader(f));
+				StringBuilder sb = new StringBuilder();
+				String line;
+				while((line = br.readLine()) == null) {
+					sb.append(line);
+				}
+				
+				User.API_KEY = sb.toString();
+				
+				br.close();
+				fis.close();
+			}
+			
+		}catch(Exception e){
+			System.out.println("Error reading a file!");
+		};
 	}
 
 	private void addComponents(int width, int height) {
@@ -200,6 +207,8 @@ public class KeyPanel extends JPanel {
 			fos.write(iv);
 			fos.write(salt);
 			fos.write(ciphertext);
+			
+			fos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -230,6 +239,8 @@ public class KeyPanel extends JPanel {
 	        String plaintext = new String(cis.readAllBytes());
 	        
 	        content = plaintext;
+	        
+	        cis.close();
 
 	    }catch(Exception e) {
 	    	e.printStackTrace();
