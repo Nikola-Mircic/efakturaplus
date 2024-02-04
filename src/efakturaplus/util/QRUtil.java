@@ -75,8 +75,8 @@ public class QRUtil {
 		s.add("V:01");
 		s.add("C:1");
 		StringBuffer buff = new StringBuffer(inv.payeeFinancialAccs.get(0));
-		while(buff.length() < 20) {
-			buff.insert(4, "0");
+		while(buff.length() < 18) {
+			buff.insert(3, "0");
 		}
 		
 		s.add("R:"+buff.toString().replace("-", ""));
