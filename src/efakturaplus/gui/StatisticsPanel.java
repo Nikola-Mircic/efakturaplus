@@ -121,12 +121,10 @@ public class StatisticsPanel extends JPanel {
 
 	public void addInvoice(Invoice invoice) {
 		this.invoices.add(invoice);
-		
-		this.plot.dates.add(invoice.deliveryDate);
-		this.plot.values.add(invoice.payableAmount);
 	}
 	
 	public void updatePlot() {
+		this.plot.updateData(invoices);
 		this.plot.makePoints();
 		repaint();
 	}
@@ -144,6 +142,16 @@ class Plot {
 
 		makePoints();
 	}
+	
+	public void updateData(ArrayList<Invoice> invoices) {
+		this.dates = new ArrayList<Date>();
+		this.values = new ArrayList<Double>();
+		
+		for(Invoice inv : invoices) {
+			this.dates.add(inv.deliveryDate);
+			this.values.add(inv.payableAmount);
+		}
+	}
 
 	public void makePoints() {
 		this.points = new ArrayList<Pair<Double, Double>>();
@@ -159,15 +167,25 @@ class Plot {
 
 		Date refDate = c.getTime();
 		
-		Collections.reverse(dates);
-		Collections.reverse(values);
+		System.out.println(values.toString());
 		
-		for(int i=1; i<values.size(); ++i) {
-			values.set(i, values.get(i-1)+values.get(i));
+		int n = dates.size();
+		
+		for(int i=0; i<n/2; ++i) {
+			Collections.swap(values, i, n-i-1);
+			Collections.swap(dates, i, n-i-1);
 		}
+		
+		for(int i=1; i<n; ++i) {
+			values.set(i, values.get(i-1) + values.get(i));
+		}
+		
+		System.out.println(values.toString());
 		
 		double maxValue = Collections.max(values);
 		double minValue = Collections.min(values);
+		
+		System.out.println(minValue + " < " + maxValue);
 
 		long dateDiff = (new Date()).getTime() - refDate.getTime();
 		dateDiff = TimeUnit.DAYS.convert(dateDiff, TimeUnit.MILLISECONDS);
