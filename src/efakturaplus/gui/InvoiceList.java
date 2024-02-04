@@ -126,7 +126,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.bckgColor = UIManager.getColor ( "Panel.background" );;
 
 		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
-		this.amount = new JLabel("" + this.invoice.payableAmount, JLabel.CENTER);
+		this.amount = new JLabel("" + this.invoice.payableAmount + " "+this.invoice.currency, JLabel.RIGHT);
 		this.supplier = new JLabel(this.invoice.supplier.name.toString());
 		
 		this.date.addMouseListener(this);
@@ -144,8 +144,8 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	}
 	
 	private void setComponentsLayout() {
-		this.date.setPreferredSize(new Dimension(150, 20));
-		this.amount.setPreferredSize(new Dimension(150, 20));
+		this.date.setPreferredSize(new Dimension(120, 20));
+		this.amount.setPreferredSize(new Dimension(120, 20));
 		this.supplier.setPreferredSize(new Dimension(150, 20));
 
 		this.setLayout(new GridBagLayout());
@@ -163,10 +163,10 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.add(date, gbc);
 		
 		gbc.gridx = 1;
+		gbc.insets.right = 50;
 		this.add(amount, gbc);
 		
 		gbc.gridx = 2;
-		gbc.weightx = 1;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.weightx = 1.0;
 		this.add(supplier, gbc);

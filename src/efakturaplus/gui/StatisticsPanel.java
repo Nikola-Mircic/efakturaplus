@@ -144,6 +144,14 @@ class Plot {
 	}
 	
 	public void updateData(ArrayList<Invoice> invoices) {
+		invoices.sort(new Comparator<Invoice>() {
+
+			@Override
+			public int compare(Invoice o1, Invoice o2) {
+				return o1.deliveryDate.compareTo(o2.deliveryDate);
+			}
+		});
+		
 		this.dates = new ArrayList<Date>();
 		this.values = new ArrayList<Double>();
 		
@@ -171,10 +179,10 @@ class Plot {
 		
 		int n = dates.size();
 		
-		for(int i=0; i<n/2; ++i) {
+		/*for(int i=0; i<n/2; ++i) {
 			Collections.swap(values, i, n-i-1);
 			Collections.swap(dates, i, n-i-1);
-		}
+		}*/
 		
 		for(int i=1; i<n; ++i) {
 			values.set(i, values.get(i-1) + values.get(i));
