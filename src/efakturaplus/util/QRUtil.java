@@ -74,12 +74,16 @@ public class QRUtil {
 		s.add("K:PR");
 		s.add("V:01");
 		s.add("C:1");
+		
+		inv.payeeFinancialAccs.set(0, inv.payeeFinancialAccs.get(0).replace("-", ""));
+		
 		StringBuffer buff = new StringBuffer(inv.payeeFinancialAccs.get(0));
+		
 		while(buff.length() < 18) {
 			buff.insert(3, "0");
 		}
 		
-		s.add("R:"+buff.toString().replace("-", ""));
+		s.add("R:"+buff.toString());
 		
 		String supplierData = inv.supplier.getQRCodeData();
 		if(supplierData.length() > 70) {
