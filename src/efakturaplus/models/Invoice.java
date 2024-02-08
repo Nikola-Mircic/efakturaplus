@@ -135,11 +135,12 @@ public class Invoice {
 		 * */
 		Node DocumentPDF = doc.getElementsByTagName("env:DocumentPdf").item(0);
 		byte[] documentBytes = Base64.getDecoder().decode(DocumentPDF.getTextContent().getBytes("UTF-8"));
-		/*FileOutputStream fos = new FileOutputStream(this.supplier.name+".pdf");
+		
+		/*FileOutputStream fos = new FileOutputStream("./PDFs/"+this.supplier.name+".pdf");
 		fos.write(documentBytes);
 		fos.close();
 		
-		fos = new FileOutputStream(this.supplier.name+".xml");
+		fos = new FileOutputStream("./XMLs/"+this.supplier.name+".xml");
 		fos.write(this.source.getBytes());
 		
 		fos.close();*/
