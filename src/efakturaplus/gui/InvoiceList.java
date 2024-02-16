@@ -54,11 +54,15 @@ public class InvoiceList extends JPanel {
 	}
 
 	public void addInvoice(Invoice invoice) {
-		for(InvoiceListItem inv : invoices) {
-			if(inv.invoice.id.equals(invoice.id))
-				return;
+		InvoiceListItem toRemove = null;
+		for(InvoiceListItem item : invoices) {
+			if(item.invoice.id.equals(invoice.id) && invoice.status.ordinal() < item.invoice.status.ordinal())
+				toRemove = item;
 		}
-	
+		
+		if(toRemove != null) 
+			this.invoices.remove(toRemove);
+		
 		InvoiceListItem item = new InvoiceListItem(invoice);
 		
 		this.invoices.add(item);
@@ -207,6 +211,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		System.out.println(this.invoice.status.name() + " " + this.invoice.payableAmount + " " + this.invoice.supplier.name);
 		if( this.equals(selectedInvoice) ) {
 			
 			deselect(selectedInvoice);

@@ -87,7 +87,7 @@ public class EFakturaUtil {
 
 		Invoice invoice = new Invoice(invoiceId, res.body());
 		
-		System.out.println("[Status] getInvoice("+invoiceId+") : " + PrintColor.MAGENTA +res.statusCode() + PrintColor.RESET);
+		System.out.println("[Status: "+invoice.status+"] getInvoice("+invoiceId+") : " + PrintColor.MAGENTA +res.statusCode() + PrintColor.RESET);
 
 		return invoice;
 	}
@@ -117,7 +117,6 @@ public class EFakturaUtil {
 		ArrayList<String> ids = getIdsFromResponse(type, res);
 
 		System.out.println(ids);
-		System.out.println("[Status] getIdsList() : " + PrintColor.MAGENTA + res.statusCode() + PrintColor.RESET);
 
 		return ids;
 	}

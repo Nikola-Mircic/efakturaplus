@@ -171,6 +171,10 @@ public class MainPanel extends JPanel {
 		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.Reminded, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Rejected, InvoiceStatus.Approved};
 		displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
 		
+		for(InvoiceStatus s : pStatusArr) {
+			System.out.println(s.name() + " --> " + s.ordinal());
+		}
+		
 		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
 		//InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified};
 
