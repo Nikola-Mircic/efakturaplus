@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -130,7 +131,10 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.bckgColor = UIManager.getColor ( "Panel.background" );;
 
 		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
-		this.amount = new JLabel("" + this.invoice.payableAmount + " "+this.invoice.currency, JLabel.RIGHT);
+		
+		DecimalFormat formater = new DecimalFormat("###,###,##0.00");
+		
+		this.amount = new JLabel("" + formater.format(this.invoice.payableAmount) + " "+this.invoice.currency, JLabel.RIGHT);
 		this.supplier = new JLabel(this.invoice.supplier.name.toString());
 		
 		this.date.addMouseListener(this);
