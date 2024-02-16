@@ -85,7 +85,7 @@ public class KeyPanel extends JPanel {
 		
 		File userData = new File("user.enc");
 		
-		if(userData.exists()) {
+		if(!userData.exists()) {
 			keyLabel = new JLabel("Please enter your API key here:");
 			keyLabel.setFont(font);
 			keyLabel.setForeground(Color.black);
