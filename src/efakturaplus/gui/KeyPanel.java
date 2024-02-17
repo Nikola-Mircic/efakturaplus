@@ -34,7 +34,7 @@ public class KeyPanel extends JPanel {
 	public KeyPanel(Window parent, int width, int height) {
 		this.parent = parent;
 		this.setSize(width, height);
-		this.setLayout(null);
+		this.setLayout(new GridBagLayout());
 		
 		loadAPIKey();
 		addComponents(width, height);
@@ -126,18 +126,31 @@ public class KeyPanel extends JPanel {
 				}
 			});
 			
-			this.add(keyLabel);
-			this.add(keyInput);
-			this.add(passLabel);
-			this.add(passInput);
-			this.add(passLabel2);
-			this.add(passInput2);
+			this.add(keyLabel, gbc(0, 0));
+			this.add(keyInput, gbc(0, 1));
+			this.add(passLabel, gbc(0, 2));
+			this.add(passInput, gbc(0, 3));
+			this.add(passLabel2, gbc(0, 4));
+			this.add(passInput2, gbc(0, 5));
 		}else {
 			passLabel.setBounds(width/2-150, height/2-75, 350, 50);
 			passInput.setBounds(width/2-150, height/2-25, 300, 60);
-			this.add(passLabel);
-			this.add(passInput);
+			this.add(passLabel, gbc(0, 0));
+			this.add(passInput, gbc(0, 1));
 		}
+	}
+	
+	private GridBagConstraints gbc(int x, int y) {
+		GridBagConstraints constr = new GridBagConstraints();
+		
+		constr.gridx = x;
+		constr.gridy = y;
+		
+		constr.insets = new Insets(10, 5, 10, 5);
+		
+		constr.fill = GridBagConstraints.HORIZONTAL;
+		constr.gridwidth = GridBagConstraints.REMAINDER;
+		return constr;
 	}
 	
 	private void addBorder(JComponent comp, Color c) {

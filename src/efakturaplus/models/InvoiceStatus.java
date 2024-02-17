@@ -8,9 +8,9 @@ public enum InvoiceStatus{
 	
 	New("New"),
 	Seen("Seen"),
+	Approved("Approved"),
 	Reminded("Reminded"),
 	ReNotified("ReNotified"),
-	Approved("Approved"),
 	Rejected("Rejected"),
 	Storno("Storno"),
 	
