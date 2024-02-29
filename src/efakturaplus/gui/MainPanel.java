@@ -10,8 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -168,15 +172,10 @@ public class MainPanel extends JPanel {
 	}
 
 	public void printPurchaseInvoices() {
-		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.Reminded, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Rejected, InvoiceStatus.Approved};
+		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Approved, InvoiceStatus.Reminded, InvoiceStatus.Seen, InvoiceStatus.Rejected};
 		displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
-		
-		for(InvoiceStatus s : pStatusArr) {
-			System.out.println(s.name() + " --> " + s.ordinal());
-		}
-		
+
 		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
-		//InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified};
 
 		displayInvoicesByStatus(InvoiceType.SALES, sStatusArr);
 	}
@@ -184,18 +183,27 @@ public class MainPanel extends JPanel {
 	private void displayInvoicesByStatus(InvoiceType type, InvoiceStatus[] statusArr) {
 		EFakturaUtil efu = EFakturaUtil.getInstance();
 		
-		for(InvoiceStatus status : statusArr) {
-			ArrayList<Invoice> invoices = efu.getInvoices(type, status);
-			Collections.reverse(invoices);
+		LocalDate today = LocalDate.now();
+		
+		LocalDate from = LocalDate.now().minusMonths(3);
+		
+		for (int i=0;i<3;++i) {
+			for(InvoiceStatus status : statusArr) {
+				ArrayList<Invoice> invoices = efu.getInvoices(type, status, from, from.plusMonths(1));
+				Collections.reverse(invoices);
 
-			for (Invoice element : invoices) {
-				if(type == InvoiceType.PURCHASE) {
-					purchaseIl.addInvoice(element);
-					statsPanel.addInvoice(element);
-				}else
-					salesIl.addInvoice(element);
+				for (Invoice element : invoices) {
+					if(type == InvoiceType.PURCHASE) {
+						purchaseIl.addInvoice(element);
+						statsPanel.addInvoice(element);
+					}else
+						salesIl.addInvoice(element);
+				}
 			}
+			
+			from = from.plusMonths(1);
 		}
+		
 		
 		statsPanel.updatePlot();
 	}

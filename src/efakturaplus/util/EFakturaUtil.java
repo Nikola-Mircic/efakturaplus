@@ -9,9 +9,14 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Flow.Subscriber;
 
 import org.json.JSONArray;
@@ -33,8 +38,11 @@ public class EFakturaUtil {
 	private String invoiceXmlURI;
 	private String invoiceIdsURI;
 	
+	private Set<String> loadedIds;
+	
 	private EFakturaUtil(String API_KEY) {
 		this.API_KEY = API_KEY;
+		this.loadedIds = new HashSet<String>();
 	}
 
 	public static EFakturaUtil getInstance() {
@@ -56,7 +64,14 @@ public class EFakturaUtil {
 		else
 			invoiceIds = object.getJSONArray("PurchaseInvoiceIds");
 		
-		invoiceIds.toList().forEach((id) -> ids.add(id.toString()));
+		invoiceIds.toList().forEach((id) -> {
+			if(loadedIds.contains(id.toString()))
+				return;
+			
+			loadedIds.add(id.toString());
+			ids.add(id.toString());
+		});
+		
 		return ids;
 	}
 	
@@ -121,8 +136,8 @@ public class EFakturaUtil {
 		return ids;
 	}
 
-	public ArrayList<Invoice> getInvoices(InvoiceType type, InvoiceStatus status){
-		createInvoicURI(type, status);
+	public ArrayList<Invoice> getInvoices(InvoiceType type, InvoiceStatus status, LocalDate from, LocalDate to){
+		createInvoicURI(type, status, from, to);
 		
 		ArrayList<Invoice> list = new ArrayList<>();
 
@@ -138,28 +153,17 @@ public class EFakturaUtil {
 		return list;
 	}
 	
-	private void createInvoicURI(InvoiceType type, InvoiceStatus status) {
-		Date date = new Date();
+	private void createInvoicURI(InvoiceType type, InvoiceStatus status, LocalDate from, LocalDate to) {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
-		Calendar c = Calendar.getInstance();
-		
-		c.setTime(date);
-		
-		c.add(Calendar.MONTH, -1);
-		c.set(Calendar.DAY_OF_MONTH, 1);
-		
-		Date fromDate = c.getTime();
-		
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		
-		String fromDateStr = "dateFrom=" + format.format(fromDate);
-		String toDateStr = "dateTo=" + format.format(date);
+		String fromDateStr = "dateFrom=" + format.format(from);
+		String toDateStr = "dateTo=" + format.format(to);
 		
 		if(type == InvoiceType.PURCHASE) {
-			this.invoiceIdsURI = efakturaURI + "purchase-invoice/ids?status=" + status ;//+ "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceIdsURI = efakturaURI + "purchase-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
 			this.invoiceXmlURI = efakturaURI + "purchase-invoice/xml" + "?invoiceId=";
 		}else {
-			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status ;//+ "&" + fromDateStr + "&" + toDateStr;
+			this.invoiceIdsURI = efakturaURI + "sales-invoice/ids?status=" + status + "&" + fromDateStr + "&" + toDateStr;
 			this.invoiceXmlURI = efakturaURI + "sales-invoice/xml" + "?invoiceId=";
 		}
 	}
