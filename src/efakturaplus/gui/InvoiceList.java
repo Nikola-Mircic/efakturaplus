@@ -137,10 +137,6 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.amount = new JLabel("" + formater.format(this.invoice.payableAmount) + " "+this.invoice.currency, JLabel.RIGHT);
 		this.supplier = new JLabel(this.invoice.supplier.name.toString());
 		
-		/*this.date.addMouseListener(this);
-		this.amount.addMouseListener(this);
-		this.supplier.addMouseListener(this);*/
-		
 		this.addMouseListener(this);
 		
 		setComponentsLayout();

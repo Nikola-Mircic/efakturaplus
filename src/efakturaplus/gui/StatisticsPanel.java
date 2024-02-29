@@ -38,15 +38,6 @@ public class StatisticsPanel extends JPanel {
 		this.plot = new Plot(new ArrayList<Date>(), new ArrayList<Double>());
 	}
 	
-	/*public StatisticsPanel(ArrayList<Invoice> invoices) {
-		this.invoices = invoices;
-
-		ArrayList<Date> dates = (ArrayList<Date>) invoices.parallelStream().map(Invoice::getDate).toList();
-		ArrayList<Double> values = (ArrayList<Double>) invoices.parallelStream().map(Invoice::getAmount).toList();
-		
-		this.plot = new Plot(dates, values);
-	}*/
-
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -171,18 +162,13 @@ class Plot {
 
 		c.setTime(new Date());
 
-		c.add(Calendar.MONTH, -1);
+		c.add(Calendar.MONTH, -3);
 
 		Date refDate = c.getTime();
 		
 		System.out.println(values.toString());
 		
 		int n = dates.size();
-		
-		/*for(int i=0; i<n/2; ++i) {
-			Collections.swap(values, i, n-i-1);
-			Collections.swap(dates, i, n-i-1);
-		}*/
 		
 		for(int i=1; i<n; ++i) {
 			values.set(i, values.get(i-1) + values.get(i));
