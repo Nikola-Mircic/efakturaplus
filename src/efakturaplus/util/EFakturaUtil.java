@@ -45,12 +45,8 @@ public class EFakturaUtil {
 		this.loadedIds = new HashSet<String>();
 	}
 
-	public static EFakturaUtil getInstance() {
-		if(instance == null) {
-			instance = new EFakturaUtil(User.API_KEY);
-		}
-
-		return instance;
+	public synchronized static EFakturaUtil getInstance() {
+		return new EFakturaUtil(User.API_KEY);
 	}
 
 	private ArrayList<String> getIdsFromResponse(InvoiceType type, HttpResponse<String> response){

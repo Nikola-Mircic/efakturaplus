@@ -173,11 +173,16 @@ public class MainPanel extends JPanel {
 
 	public void printPurchaseInvoices() {
 		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Approved, InvoiceStatus.Reminded, InvoiceStatus.Seen, InvoiceStatus.Rejected};
-		displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
+		
+		new Thread(()->{
+			displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
+		}).start();
 
 		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
-
-		displayInvoicesByStatus(InvoiceType.SALES, sStatusArr);
+		
+		new Thread(()->{
+			displayInvoicesByStatus(InvoiceType.SALES, sStatusArr);
+		}).start();
 	}
 
 	private void displayInvoicesByStatus(InvoiceType type, InvoiceStatus[] statusArr) {
@@ -200,6 +205,8 @@ public class MainPanel extends JPanel {
 						salesIl.addInvoice(element);
 				}
 			}
+			
+			dataPanel.revalidate();
 			
 			from = from.plusMonths(1);
 		}

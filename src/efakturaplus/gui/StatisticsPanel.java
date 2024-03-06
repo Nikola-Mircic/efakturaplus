@@ -89,10 +89,6 @@ public class StatisticsPanel extends JPanel {
 			int y2 = getHeight() - BORDER_GAP;
 			
 			g2.fillRect(x1, y1, 10, y2-y1);
-			
-			/*g2.fillPolygon(new int[] {x1, x1, x2, x2},
-					   	   new int[] {y1, BORDER_GAP+(int)DATA_HEIGHT, BORDER_GAP+(int)DATA_HEIGHT, y2},
-					   	   4);*/
 		}
 
 		g2.setStroke(oldStroke);
