@@ -83,11 +83,12 @@ public class StatisticsPanel extends JPanel {
 		g2.setColor(GRAPH_COLOR);
 		g2.setStroke(GRAPH_STROKE);
 		for (int i = 0; i < graphPoints.size() - 1; i++) {
-			int x1 = graphPoints.get(i).x;
+			int x1 = graphPoints.get(i).x - 5;
 			int y1 = graphPoints.get(i).y;
-			int x2 = graphPoints.get(i + 1).x;
-			int y2 = graphPoints.get(i + 1).y;
-			g2.drawLine(x1, y1, x2, y2);
+			int x2 = graphPoints.get(i).x + 5;
+			int y2 = getHeight() - BORDER_GAP;
+			
+			g2.fillRect(x1, y1, 10, y2-y1);
 			
 			/*g2.fillPolygon(new int[] {x1, x1, x2, x2},
 					   	   new int[] {y1, BORDER_GAP+(int)DATA_HEIGHT, BORDER_GAP+(int)DATA_HEIGHT, y2},
@@ -165,9 +166,9 @@ class Plot {
 		
 		int n = dates.size();
 		
-		for(int i=1; i<n; ++i) {
+		/*for(int i=1; i<n; ++i) {
 			values.set(i, values.get(i-1) + values.get(i));
-		}
+		}*/
 		
 		System.out.println(values.toString());
 		
