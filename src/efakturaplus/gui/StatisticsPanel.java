@@ -1,6 +1,7 @@
 package efakturaplus.gui;
 
 import java.awt.*;
+import java.text.spi.DateFormatSymbolsProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -158,13 +159,7 @@ class Plot {
 		if(dates.size() == 0)
 			return;
 		
-		Calendar c = Calendar.getInstance();
-
-		c.setTime(new Date());
-
-		c.add(Calendar.MONTH, -3);
-
-		Date refDate = c.getTime();
+		Date refDate = Collections.min(dates);
 		
 		System.out.println(values.toString());
 		
@@ -197,7 +192,5 @@ class Plot {
 				return (int) (o1.first*1000 - o2.first*1000);
 			}
 		});
-
-		System.out.println(points.toString());
 	}
 }
