@@ -1,6 +1,7 @@
 package efakturaplus.gui;
 
 import java.awt.*;
+import java.text.spi.DateFormatSymbolsProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,15 +39,6 @@ public class StatisticsPanel extends JPanel {
 		this.plot = new Plot(new ArrayList<Date>(), new ArrayList<Double>());
 	}
 	
-	/*public StatisticsPanel(ArrayList<Invoice> invoices) {
-		this.invoices = invoices;
-
-		ArrayList<Date> dates = (ArrayList<Date>) invoices.parallelStream().map(Invoice::getDate).toList();
-		ArrayList<Double> values = (ArrayList<Double>) invoices.parallelStream().map(Invoice::getAmount).toList();
-		
-		this.plot = new Plot(dates, values);
-	}*/
-
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -91,15 +83,12 @@ public class StatisticsPanel extends JPanel {
 		g2.setColor(GRAPH_COLOR);
 		g2.setStroke(GRAPH_STROKE);
 		for (int i = 0; i < graphPoints.size() - 1; i++) {
-			int x1 = graphPoints.get(i).x;
+			int x1 = graphPoints.get(i).x - 5;
 			int y1 = graphPoints.get(i).y;
-			int x2 = graphPoints.get(i + 1).x;
-			int y2 = graphPoints.get(i + 1).y;
-			g2.drawLine(x1, y1, x2, y2);
+			int x2 = graphPoints.get(i).x + 5;
+			int y2 = getHeight() - BORDER_GAP;
 			
-			/*g2.fillPolygon(new int[] {x1, x1, x2, x2},
-					   	   new int[] {y1, BORDER_GAP+(int)DATA_HEIGHT, BORDER_GAP+(int)DATA_HEIGHT, y2},
-					   	   4);*/
+			g2.fillRect(x1, y1, 10, y2-y1);
 		}
 
 		g2.setStroke(oldStroke);
@@ -167,26 +156,15 @@ class Plot {
 		if(dates.size() == 0)
 			return;
 		
-		Calendar c = Calendar.getInstance();
-
-		c.setTime(new Date());
-
-		c.add(Calendar.MONTH, -1);
-
-		Date refDate = c.getTime();
+		Date refDate = Collections.min(dates);
 		
 		System.out.println(values.toString());
 		
 		int n = dates.size();
 		
-		/*for(int i=0; i<n/2; ++i) {
-			Collections.swap(values, i, n-i-1);
-			Collections.swap(dates, i, n-i-1);
-		}*/
-		
-		for(int i=1; i<n; ++i) {
+		/*for(int i=1; i<n; ++i) {
 			values.set(i, values.get(i-1) + values.get(i));
-		}
+		}*/
 		
 		System.out.println(values.toString());
 		
@@ -211,7 +189,5 @@ class Plot {
 				return (int) (o1.first*1000 - o2.first*1000);
 			}
 		});
-
-		System.out.println(points.toString());
 	}
 }
