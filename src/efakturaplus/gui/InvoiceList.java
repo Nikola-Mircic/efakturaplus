@@ -52,6 +52,8 @@ public class InvoiceList extends JPanel {
 		
 		JScrollPane sp = new JScrollPane(invoiceDisplay);
 		this.add(sp, BorderLayout.CENTER);
+		
+		printInvoices();
 	}
 
 	public void addInvoice(Invoice invoice) {
@@ -84,6 +86,19 @@ public class InvoiceList extends JPanel {
 		
 		int n = this.invoices.size();
 		GridBagConstraints constr = new GridBagConstraints();
+		
+		if (n == 0) {
+			ImageIcon loading_gif = new ImageIcon("./icons/loading.gif");
+			JLabel loading = new JLabel("Loading ...", loading_gif, JLabel.CENTER);
+
+			constr.gridx = 0;
+			constr.gridy = 0;
+			constr.weightx = 1;
+			constr.anchor = GridBagConstraints.CENTER;
+
+			this.invoiceDisplay.add(loading, constr);
+		}
+
 		
 		for(int i=0; i<n; ++i) {
 			constr.gridx = 0;
