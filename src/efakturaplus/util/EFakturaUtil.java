@@ -29,7 +29,6 @@ import efakturaplus.models.User;
 
 public class EFakturaUtil {
 	//Singleton instance
-	private static EFakturaUtil instance = null;
 
 	private String API_KEY = "";
 
@@ -45,13 +44,16 @@ public class EFakturaUtil {
 		this.loadedIds = new HashSet<String>();
 	}
 
-	public synchronized static EFakturaUtil getInstance() {
+	public static EFakturaUtil getInstance() {
 		return new EFakturaUtil(User.API_KEY);
 	}
 
 	private ArrayList<String> getIdsFromResponse(InvoiceType type, HttpResponse<String> response){
 		ArrayList<String> ids = new ArrayList<>();
-
+		
+		System.out.println("[ " + type + " ] response for IDs : ");
+		System.out.println(response.body());
+		
 		JSONObject object = new JSONObject(response.body());
 		JSONArray invoiceIds;
 		
@@ -71,10 +73,11 @@ public class EFakturaUtil {
 		return ids;
 	}
 	
-	private HttpResponse<String> sendRequest(HttpRequest request) {
+	private synchronized HttpResponse<String> sendRequest(HttpRequest request) {
 		HttpClient client = HttpClient.newHttpClient();
 		try {
 			// GetInvoiceRequest
+			Thread.sleep(500);
 			HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 			return res;

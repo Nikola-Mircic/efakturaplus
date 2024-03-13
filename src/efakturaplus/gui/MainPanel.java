@@ -172,15 +172,15 @@ public class MainPanel extends JPanel {
 	}
 
 	public void printPurchaseInvoices() {
-		InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Approved, InvoiceStatus.Reminded, InvoiceStatus.Seen, InvoiceStatus.Rejected};
-		
 		new Thread(()->{
+			InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Approved, InvoiceStatus.Reminded, InvoiceStatus.Seen, InvoiceStatus.Rejected};
+
 			displayInvoicesByStatus(InvoiceType.PURCHASE, pStatusArr);
 		}).start();
-
-		InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
 		
 		new Thread(()->{
+			InvoiceStatus[] sStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Seen, InvoiceStatus.Approved};
+	
 			displayInvoicesByStatus(InvoiceType.SALES, sStatusArr);
 		}).start();
 	}
@@ -193,6 +193,7 @@ public class MainPanel extends JPanel {
 		LocalDate from = LocalDate.now().minusMonths(3);
 		
 		for (int i=0;i<3;++i) {
+			
 			for(InvoiceStatus status : statusArr) {
 				ArrayList<Invoice> invoices = efu.getInvoices(type, status, from, from.plusMonths(1));
 				Collections.reverse(invoices);
@@ -208,7 +209,16 @@ public class MainPanel extends JPanel {
 			
 			dataPanel.revalidate();
 			
+			System.out.println(from.toString());
+			
 			from = from.plusMonths(1);
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		
