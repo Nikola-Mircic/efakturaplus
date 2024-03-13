@@ -5,7 +5,7 @@
 <hr>
 
 ### TO-DO list:
- - [ ] - Ploting both sales and purchases
+ - [x] - Ploting both sales and purchases
  - [ ] - Payment description
  - [ ] - Password check
  - [ ] - Form validation
