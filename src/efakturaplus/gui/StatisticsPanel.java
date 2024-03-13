@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import ch.randelshofer.util.ArrayUtil;
 import efakturaplus.models.Invoice;
+import efakturaplus.models.InvoiceType;
 import efakturaplus.util.Pair;
 
 public class StatisticsPanel extends JPanel {
@@ -24,7 +25,6 @@ public class StatisticsPanel extends JPanel {
 	private static final int PREF_W = 800;
 	private static final int PREF_H = 650;
 	private static final int BORDER_GAP = 30;
-	private static final Color GRAPH_COLOR = new Color(0.0f, 1.0f, 0.1f, 0.2f);
 	private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
 	private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
 	private static final int GRAPH_POINT_WIDTH = 5;
@@ -36,7 +36,7 @@ public class StatisticsPanel extends JPanel {
 	public StatisticsPanel() {
 		this.invoices = new ArrayList<Invoice>();
 		
-		this.plot = new Plot(new ArrayList<Date>(), new ArrayList<Double>());
+		this.plot = new Plot();
 	}
 	
 	@Override
@@ -78,9 +78,10 @@ public class StatisticsPanel extends JPanel {
 			int y1 = y0 - GRAPH_POINT_WIDTH;
 			g2.drawLine(x0, y0, x1, y1);
 		}
-
+		
+		
+		// Pillars
 		Stroke oldStroke = g2.getStroke();
-		g2.setColor(GRAPH_COLOR);
 		g2.setStroke(GRAPH_STROKE);
 		for (int i = 0; i < graphPoints.size() - 1; i++) {
 			int x1 = graphPoints.get(i).x - 5;
@@ -88,6 +89,7 @@ public class StatisticsPanel extends JPanel {
 			int x2 = graphPoints.get(i).x + 5;
 			int y2 = getHeight() - BORDER_GAP;
 			
+			g2.setColor(plot.colors.get(i));
 			g2.fillRect(x1, y1, 10, y2-y1);
 		}
 
@@ -120,14 +122,20 @@ public class StatisticsPanel extends JPanel {
 }
 
 class Plot {
+	private final Color PURCHASE_COLOR = new Color(0.0f, 1.0f, 0.1f, 0.2f);
+	private final Color SALE_COLOR = new Color(1.0f, 0.0f, 0.1f, 0.2f);
+	
 	public ArrayList<Date> dates;
 	public ArrayList<Double> values;
+	public ArrayList<Color> colors;
 
 	public ArrayList<Pair<Double, Double>> points;
 
-	public Plot(ArrayList<Date> dates, ArrayList<Double> values) {
-		this.dates = dates;
-		this.values = values;
+	public Plot() {
+		this.dates = new ArrayList<Date>();
+		this.values = new ArrayList<Double>();
+		
+		this.colors = new ArrayList<Color>();
 
 		makePoints();
 	}
@@ -143,10 +151,12 @@ class Plot {
 		
 		this.dates = new ArrayList<Date>();
 		this.values = new ArrayList<Double>();
+		this.colors = new ArrayList<Color>();
 		
 		for(Invoice inv : invoices) {
 			this.dates.add(inv.deliveryDate);
 			this.values.add(inv.payableAmount);
+			this.colors.add((inv.type.equals(InvoiceType.PURCHASE)) ? PURCHASE_COLOR : SALE_COLOR);
 		}
 	}
 
@@ -161,10 +171,6 @@ class Plot {
 		System.out.println(values.toString());
 		
 		int n = dates.size();
-		
-		/*for(int i=1; i<n; ++i) {
-			values.set(i, values.get(i-1) + values.get(i));
-		}*/
 		
 		System.out.println(values.toString());
 		
@@ -183,11 +189,5 @@ class Plot {
 			points.add(new Pair<Double, Double>(1.0 * diff / dateDiff, values.get(i) / maxValue));
 		}
 		
-		points.sort(new Comparator<Pair<Double, Double>>() {
-			@Override
-			public int compare(Pair<Double, Double> o1, Pair<Double, Double> o2) {
-				return (int) (o1.first*1000 - o2.first*1000);
-			}
-		});
 	}
 }
