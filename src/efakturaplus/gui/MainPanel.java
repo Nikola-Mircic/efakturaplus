@@ -202,9 +202,11 @@ public class MainPanel extends JPanel {
 					if(type == InvoiceType.PURCHASE) {
 						purchaseIl.addInvoice(element);
 						statsPanel.addInvoice(element);
-					}else
+					}else {
 						salesIl.addInvoice(element);
-				}
+						statsPanel.addInvoice(element);
+					}
+				}					
 			}
 			
 			dataPanel.revalidate();
