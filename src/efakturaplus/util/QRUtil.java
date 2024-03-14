@@ -114,6 +114,9 @@ public class QRUtil {
 			s.add(ro);
 		}
 		
+		s.add("S:Transakcije po nalogu građana");
+		
+		
 		return String.join("|", s);
 	}
 }
