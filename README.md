@@ -6,7 +6,7 @@
 
 ### TO-DO list:
  - [x] - Ploting both sales and purchases
- - [ ] - Payment description
+ - [x] - Payment description
  - [ ] - Password check
  - [ ] - Form validation
 
