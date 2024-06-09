@@ -77,7 +77,7 @@ public class EFakturaUtil {
 		HttpClient client = HttpClient.newHttpClient();
 		try {
 			// GetInvoiceRequest
-			Thread.sleep(500);
+			Thread.sleep(1000);
 			HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 			return res;
