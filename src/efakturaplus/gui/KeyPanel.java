@@ -12,12 +12,7 @@ import java.security.spec.KeySpec;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import efakturaplus.models.User;
 
@@ -70,7 +65,6 @@ public class KeyPanel extends JPanel {
 		
 		passLabel = new JLabel("Please enter your password here:");
 		passLabel.setFont(font);
-		passLabel.setForeground(Color.black);
 		
 		passInput = new JPasswordField();
 		addBorder(passInput, Color.black);
@@ -84,11 +78,17 @@ public class KeyPanel extends JPanel {
 		});
 		
 		File userData = new File("user.enc");
-		
+
+		JButton signInBtn = makeButton("Sign in", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				submitData();
+			}
+		});
+
 		if(!userData.exists()) {
 			keyLabel = new JLabel("Please enter your API key here:");
 			keyLabel.setFont(font);
-			keyLabel.setForeground(Color.black);
 			keyLabel.setBounds(width/2-150, height/4-75, 350, 50);
 			
 			keyInput = new JTextField();
@@ -110,7 +110,6 @@ public class KeyPanel extends JPanel {
 			
 			passLabel2 = new JLabel("Please enter your password again:");
 			passLabel2.setFont(font);
-			passLabel2.setForeground(Color.black);
 			passLabel2.setBounds(width/2-150, height*3/4-75, 350, 50);
 			
 			
@@ -132,11 +131,13 @@ public class KeyPanel extends JPanel {
 			this.add(passInput, gbc(0, 3));
 			this.add(passLabel2, gbc(0, 4));
 			this.add(passInput2, gbc(0, 5));
+			this.add(signInBtn, gbc(0, 6));
 		}else {
 			passLabel.setBounds(width/2-150, height/2-75, 350, 50);
 			passInput.setBounds(width/2-150, height/2-25, 300, 60);
 			this.add(passLabel, gbc(0, 0));
 			this.add(passInput, gbc(0, 1));
+			this.add(signInBtn, gbc(0, 2));
 		}
 	}
 	
@@ -149,10 +150,27 @@ public class KeyPanel extends JPanel {
 		constr.insets = new Insets(10, 5, 10, 5);
 		
 		constr.fill = GridBagConstraints.HORIZONTAL;
-		constr.gridwidth = GridBagConstraints.REMAINDER;
+		constr.gridwidth = GridBagConstraints.CENTER;
 		return constr;
 	}
-	
+
+	private JButton makeButton(String text, ActionListener listener) {
+		JButton btn = new JButton();
+
+		btn.setLayout(new BoxLayout(btn, BoxLayout.Y_AXIS));
+
+		btn.add(centeredLabel(text));
+		btn.addActionListener(listener);
+
+		return btn;
+	}
+
+	private JLabel centeredLabel(String text) {
+		JLabel label = new JLabel(text);
+		label.setAlignmentX(CENTER_ALIGNMENT);
+		return label;
+	}
+
 	private void addBorder(JComponent comp, Color c) {
 		comp.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(c, 3, true),
