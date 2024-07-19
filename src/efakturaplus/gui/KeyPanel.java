@@ -186,7 +186,16 @@ public class KeyPanel extends JPanel {
 		
 		if(!userData.exists()) {
 			User.API_KEY = keyInput.getText();
-			
+
+			if(!Arrays.equals(passInput.getPassword(), passInput2.getPassword())){
+				addBorder(passInput, Color.RED);
+				addBorder(passInput2, Color.RED);
+
+				JOptionPane.showMessageDialog(null, "Passwords do not match!");
+
+				return;
+			}
+
 			try {
 				encryptData();
 			} catch (Exception e) {
