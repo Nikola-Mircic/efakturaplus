@@ -3,21 +3,20 @@ package efakturaplus.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.border.Border;
 
 import efakturaplus.models.User;
 
@@ -70,7 +69,6 @@ public class KeyPanel extends JPanel {
 		
 		passLabel = new JLabel("Please enter your password here:");
 		passLabel.setFont(font);
-		passLabel.setForeground(Color.black);
 		
 		passInput = new JPasswordField();
 		addBorder(passInput, Color.black);
@@ -84,11 +82,17 @@ public class KeyPanel extends JPanel {
 		});
 		
 		File userData = new File("user.enc");
-		
+
+		JButton signInBtn = makeButton("Sign in", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				submitData();
+			}
+		});
+
 		if(!userData.exists()) {
 			keyLabel = new JLabel("Please enter your API key here:");
 			keyLabel.setFont(font);
-			keyLabel.setForeground(Color.black);
 			keyLabel.setBounds(width/2-150, height/4-75, 350, 50);
 			
 			keyInput = new JTextField();
@@ -110,7 +114,6 @@ public class KeyPanel extends JPanel {
 			
 			passLabel2 = new JLabel("Please enter your password again:");
 			passLabel2.setFont(font);
-			passLabel2.setForeground(Color.black);
 			passLabel2.setBounds(width/2-150, height*3/4-75, 350, 50);
 			
 			
@@ -132,11 +135,13 @@ public class KeyPanel extends JPanel {
 			this.add(passInput, gbc(0, 3));
 			this.add(passLabel2, gbc(0, 4));
 			this.add(passInput2, gbc(0, 5));
+			this.add(signInBtn, gbc(0, 6));
 		}else {
 			passLabel.setBounds(width/2-150, height/2-75, 350, 50);
 			passInput.setBounds(width/2-150, height/2-25, 300, 60);
 			this.add(passLabel, gbc(0, 0));
 			this.add(passInput, gbc(0, 1));
+			this.add(signInBtn, gbc(0, 2));
 		}
 	}
 	
@@ -149,10 +154,27 @@ public class KeyPanel extends JPanel {
 		constr.insets = new Insets(10, 5, 10, 5);
 		
 		constr.fill = GridBagConstraints.HORIZONTAL;
-		constr.gridwidth = GridBagConstraints.REMAINDER;
+		constr.gridwidth = GridBagConstraints.CENTER;
 		return constr;
 	}
-	
+
+	private JButton makeButton(String text, ActionListener listener) {
+		JButton btn = new JButton();
+
+		btn.setLayout(new BoxLayout(btn, BoxLayout.Y_AXIS));
+
+		btn.add(centeredLabel(text));
+		btn.addActionListener(listener);
+
+		return btn;
+	}
+
+	private JLabel centeredLabel(String text) {
+		JLabel label = new JLabel(text);
+		label.setAlignmentX(CENTER_ALIGNMENT);
+		return label;
+	}
+
 	private void addBorder(JComponent comp, Color c) {
 		comp.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(c, 3, true),
@@ -164,7 +186,16 @@ public class KeyPanel extends JPanel {
 		
 		if(!userData.exists()) {
 			User.API_KEY = keyInput.getText();
-			
+
+			if(!Arrays.equals(passInput.getPassword(), passInput2.getPassword())){
+				addBorder(passInput, Color.RED);
+				addBorder(passInput2, Color.RED);
+
+				JOptionPane.showMessageDialog(null, "Passwords do not match!");
+
+				return;
+			}
+
 			try {
 				encryptData();
 			} catch (Exception e) {
@@ -174,6 +205,15 @@ public class KeyPanel extends JPanel {
 			addComponents(getWidth(), getHeight());
 		}
 		else {
+			if(!validateInput()){
+				addBorder(passInput, Color.RED);
+				passInput.setText("");
+
+				JOptionPane.showMessageDialog(null, "Incorrect password!");
+
+				return;
+			}
+
 			try {
 				String data = decryptData();
 				System.out.println("Decrypted: "+data);
@@ -188,14 +228,51 @@ public class KeyPanel extends JPanel {
 	}
 	
 	private boolean validateInput() {
-		boolean valid = true;
+		try {
+			FileInputStream fis = new FileInputStream("pass.enc");
+
+			String password = new String(passInput.getPassword());
+
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+			byte[] passEnc = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+
+			byte[] loadedPass = fis.readAllBytes();
+
+			if(Arrays.equals(passEnc, loadedPass)){
+				return true;
+			}
+
+			fis.close();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		
-		
-		
-		return valid;
+		return false;
 	}
 	
 	private void encryptData() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		/* SAVING PASSWORD
+		* The password is saved as SHA-256 encoded string
+		* */
+
+		String password = passInput.getText();
+
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] passEnc = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+
+        try {
+            FileOutputStream fos = new FileOutputStream("pass.enc");
+
+			fos.write(passEnc);
+
+			fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /* SAVING EFAKTURA API KEY
+		* The API key is encrypted with AES256 algorithm, and saved alongside with IV
+		* */
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[8];
 		random.nextBytes(salt);

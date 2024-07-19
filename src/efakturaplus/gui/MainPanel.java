@@ -152,7 +152,10 @@ public class MainPanel extends JPanel {
 		JButton btn = new JButton();
 		
 		btn.setLayout(new BoxLayout(btn, BoxLayout.Y_AXIS));
-		btn.add(centeredLabel(new StretchIcon(ico)));
+
+		if(ico != null)
+			btn.add(centeredLabel(new StretchIcon(ico)));
+
 		btn.add(centeredLabel(text));
 		btn.addActionListener(listener);
 		
