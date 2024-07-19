@@ -3,16 +3,20 @@ package efakturaplus.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import efakturaplus.models.User;
 
@@ -192,6 +196,15 @@ public class KeyPanel extends JPanel {
 			addComponents(getWidth(), getHeight());
 		}
 		else {
+			if(!validateInput()){
+				addBorder(passInput, Color.RED);
+				passInput.setText("");
+
+				JOptionPane.showMessageDialog(null, "Incorrect password!");
+
+				return;
+			}
+
 			try {
 				String data = decryptData();
 				System.out.println("Decrypted: "+data);
@@ -206,14 +219,51 @@ public class KeyPanel extends JPanel {
 	}
 	
 	private boolean validateInput() {
-		boolean valid = true;
+		try {
+			FileInputStream fis = new FileInputStream("pass.enc");
+
+			String password = new String(passInput.getPassword());
+
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+			byte[] passEnc = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+
+			byte[] loadedPass = fis.readAllBytes();
+
+			if(Arrays.equals(passEnc, loadedPass)){
+				return true;
+			}
+
+			fis.close();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		
-		
-		
-		return valid;
+		return false;
 	}
 	
 	private void encryptData() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		/* SAVING PASSWORD
+		* The password is saved as SHA-256 encoded string
+		* */
+
+		String password = passInput.getText();
+
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		byte[] passEnc = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+
+        try {
+            FileOutputStream fos = new FileOutputStream("pass.enc");
+
+			fos.write(passEnc);
+
+			fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /* SAVING EFAKTURA API KEY
+		* The API key is encrypted with AES256 algorithm, and saved alongside with IV
+		* */
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[8];
 		random.nextBytes(salt);
