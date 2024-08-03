@@ -2,6 +2,8 @@
 /samples/
 /PDFs/
 /XMLs/
+/jar/
+/.idea/artifacts
 user.enc
 pass.enc
 efakturaplus.iml
