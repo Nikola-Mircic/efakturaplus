@@ -1,4 +1,4 @@
-package efakturaplus.gui;
+package efakturaplus.gui.panels;
 
 import javax.swing.JPanel;
 

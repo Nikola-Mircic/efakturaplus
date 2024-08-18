@@ -1,4 +1,4 @@
-package efakturaplus.gui;
+package efakturaplus.gui.panels;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -16,8 +16,8 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
+import efakturaplus.gui.Window;
 import efakturaplus.models.User;
 
 public class KeyPanel extends JPanel {
@@ -28,7 +28,7 @@ public class KeyPanel extends JPanel {
 	JTextField keyInput;
 	JPasswordField passInput, passInput2;
 
-	private Window parent;
+	private efakturaplus.gui.Window parent;
 	
 	public KeyPanel(Window parent, int width, int height) {
 		this.parent = parent;
