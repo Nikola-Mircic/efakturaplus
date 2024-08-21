@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import efakturaplus.gui.plots.Plot;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceType;
+import efakturaplus.models.User;
 import efakturaplus.util.Pair;
 
 public class StatisticsPanel extends JPanel {
@@ -22,14 +23,10 @@ public class StatisticsPanel extends JPanel {
 	private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
 	private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
 	private static final int GRAPH_POINT_WIDTH = 5;
-
-	private ArrayList<Invoice> invoices;
 	
 	private Plot plot;
 	
 	public StatisticsPanel() {
-		this.invoices = new ArrayList<Invoice>();
-		
 		this.plot = new Plot();
 	}
 	
@@ -105,11 +102,15 @@ public class StatisticsPanel extends JPanel {
 	}
 
 	public void addInvoice(Invoice invoice) {
-		this.invoices.add(invoice);
 	}
 	
 	public void updatePlot() {
-		this.plot.updateData(invoices);
+		User user = User.getUser();
+
+		ArrayList<Invoice> toPlot = new ArrayList<>(user.purchases);
+		toPlot.addAll(user.sales);
+
+		this.plot.updateData(toPlot);
 		this.plot.makePoints();
 		repaint();
 	}

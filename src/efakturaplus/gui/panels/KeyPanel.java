@@ -52,7 +52,7 @@ public class KeyPanel extends JPanel {
 					sb.append(line);
 				}
 				
-				User.API_KEY = sb.toString();
+				User.useApiKey(sb.toString());
 				
 				br.close();
 				fis.close();
@@ -185,7 +185,7 @@ public class KeyPanel extends JPanel {
 		File userData = new File("user.enc");
 		
 		if(!userData.exists()) {
-			User.API_KEY = keyInput.getText();
+			User.useApiKey(keyInput.getText());
 
 			if(!Arrays.equals(passInput.getPassword(), passInput2.getPassword())){
 				addBorder(passInput, Color.RED);
@@ -218,7 +218,7 @@ public class KeyPanel extends JPanel {
 				String data = decryptData();
 				System.out.println("Decrypted: "+data);
 				
-				User.API_KEY = data;
+				User.useApiKey(data);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

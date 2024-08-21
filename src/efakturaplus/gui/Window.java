@@ -55,7 +55,7 @@ public class Window extends JFrame {
 
 	public void showMainPanel() {
 		this.panels.show(this.getContentPane(), "MAIN_PANEL");
-		this.mainPanel.printPurchaseInvoices();
+		this.mainPanel.loadUserInvoices();
 	}
 	
 	public void showKeyPanel() {
