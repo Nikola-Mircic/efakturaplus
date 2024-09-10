@@ -3,24 +3,32 @@ package efakturaplus.gui.plots;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceType;
 
+import java.awt.*;
+
 public class PlotItem {
-    private Invoice invoiceRef;
+    protected static final Color PURCHASE_COLOR = new Color(1.0f, 0.0f, 0.1f, 0.2f);
+    protected static final Color SALE_COLOR = new Color(0.0f, 1.0f, 0.1f, 0.2f);
+
+    public Invoice invoiceRef;
 
     public int x,y;
-    public int height;
+    public int width,height;
+    public Color color;
 
     public PlotItem(Invoice invoiceRef){
-        this(invoiceRef,0,0, 0);
+        this(invoiceRef,0,0,0, 0);
     }
 
     public PlotItem(Invoice invoiceRef, int x, int y){
-        this(invoiceRef,x,y,0);
+        this(invoiceRef,x,y,0,0);
     }
 
-    public PlotItem(Invoice invoiceRef, int x, int y, int height){
+    public PlotItem(Invoice invoiceRef, int x, int y, int width, int height){
         this.invoiceRef = invoiceRef;
+        this.color = invoiceRef.type == InvoiceType.PURCHASE ? PURCHASE_COLOR : SALE_COLOR;
         this.x = x;
         this.y = y;
+        this.width = width;
         this.height = height;
     }
 
