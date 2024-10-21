@@ -2,6 +2,7 @@ package efakturaplus.gui.plots;
 
 import efakturaplus.models.Invoice;
 
+import java.awt.event.MouseEvent;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class BarPlot extends Plot{
+
+    public BarPlot(){
+        super();
+    }
+
     @Override
     void makeItems(ArrayList<Invoice> invoices) {
         this.items = new ArrayList<>();
@@ -45,5 +51,16 @@ public class BarPlot extends Plot{
 
             this.items.add(item);
         }
+    }
+
+    @Override
+    protected PlotItem isItemFocused(int x, int y) {
+        for(PlotItem item : items){
+            if(x >= item.x - item.width && x <= item.x + item.width
+                    && y >= item.y && y <= item.y + item.height){
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -6,13 +6,16 @@ import efakturaplus.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Plot extends JComponent {
+public abstract class Plot extends JComponent implements MouseListener, MouseMotionListener {
 
     protected int PREF_W = 800;
     protected int PREF_H = 650;
@@ -24,7 +27,7 @@ public abstract class Plot extends JComponent {
     protected ArrayList<PlotItem> items;
 
     public Plot() {
-
+        addMouseListener(this);
     }
 
     public void updateData(ArrayList<Invoice> invoices) {
@@ -47,46 +50,63 @@ public abstract class Plot extends JComponent {
 
         System.out.println("Rendering " + items.size() + "items ....");
 
-        for (PlotItem item : items) {
-            int x0 = item.x + item.width/2;
-            int x1 = x0;
-            int y0 = getHeight() - BORDER_GAP;
-            int y1 = y0 - GRAPH_POINT_WIDTH;
-            g2.drawLine(x0, y0, x1, y1);
-        }
-
+        // Pravougaonici
         for(PlotItem plotItem : items){
             g.setColor(plotItem.color);
-            g.fillRect(BORDER_GAP + plotItem.x, BORDER_GAP + plotItem.y, plotItem.width, plotItem.height);
+            g.fillRect(BORDER_GAP + plotItem.x - plotItem.width/2, BORDER_GAP + plotItem.y, plotItem.width, plotItem.height);
+        }
+
+        // Crtice
+        for (PlotItem item : items) {
+            g.setColor(Color.BLACK);
+            int x0 = BORDER_GAP + item.x;
+            int x1 = x0;
+            int y0 = getHeight() - BORDER_GAP - GRAPH_POINT_WIDTH;
+            int y1 = y0 + 2 * GRAPH_POINT_WIDTH;
+            g2.drawLine(x0, y0, x1, y1);
         }
     }
-       /* this.points = new ArrayList<Pair<Double, Double>>();
 
-        if(dates.size() == 0)
-            return;
+    protected abstract PlotItem isItemFocused(int x, int y);
 
-        Date refDate = Collections.min(dates);
+    @Override
+    public void mouseDragged(MouseEvent e) {}
 
-        System.out.println(values.toString());
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        PlotItem item = isItemFocused(e.getX() - BORDER_GAP, e.getY() - BORDER_GAP);
+        if(item != null){
+            System.out.println(item.getLabel());
+        }
+    }
 
-        int n = dates.size();
+    @Override
+    public void mouseClicked(MouseEvent e) {
 
-        System.out.println(values.toString());
+    }
 
-        double maxValue = Collections.max(values);
-        double minValue = Collections.min(values);
+    @Override
+    public void mousePressed(MouseEvent e) {
 
-        System.out.println(minValue + " < " + maxValue);
+    }
 
-        long dateDiff = (new Date()).getTime() - refDate.getTime();
-        dateDiff = TimeUnit.DAYS.convert(dateDiff, TimeUnit.MILLISECONDS);
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        PlotItem item = isItemFocused(e.getX() - BORDER_GAP, e.getY() - BORDER_GAP);
+        if(item != null){
+            System.out.println(item.getLabel());
+        }
+    }
 
-        for (int i = 0; i < dates.size(); ++i) {
-            long diff = dates.get(i).getTime() - refDate.getTime();
-            diff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    @Override
+    public void mouseEntered(MouseEvent e) {
 
-            points.add(new Pair<Double, Double>(1.0 * diff / dateDiff, values.get(i) / maxValue));
-        }*/
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 
     @Override
     public Dimension getPreferredSize() {
