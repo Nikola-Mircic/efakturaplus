@@ -45,7 +45,7 @@ public class EFakturaUtil {
 	}
 
 	public static EFakturaUtil getInstance() {
-		return new EFakturaUtil(User.API_KEY);
+		return new EFakturaUtil(User.getUser().API_KEY);
 	}
 
 	private ArrayList<String> getIdsFromResponse(InvoiceType type, HttpResponse<String> response){
@@ -77,7 +77,7 @@ public class EFakturaUtil {
 		HttpClient client = HttpClient.newHttpClient();
 		try {
 			// GetInvoiceRequest
-			Thread.sleep(500);
+			Thread.sleep(1000);
 			HttpResponse<String> res = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 			return res;
