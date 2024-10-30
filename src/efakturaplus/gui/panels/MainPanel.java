@@ -207,11 +207,7 @@ public class MainPanel extends JPanel {
 				Collections.reverse(invoices);
 
 				for (Invoice element : invoices) {
-					if(type == InvoiceType.PURCHASE) {
-						user.purchases.add(element);
-					}else {
-						user.sales.add(element);
-					}
+					user.addInvoice(element);
 				}					
 			}
 
@@ -232,7 +228,7 @@ public class MainPanel extends JPanel {
 			}
 		}
 
-		statsPanel.updatePlot();
+		statsPanel.updateData();
 	}
 
 }
