@@ -37,15 +37,15 @@ public class InvoiceList extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	ArrayList<InvoiceListItem> invoices;
+	ArrayList<Invoice> invoices;
 	
 	private JPanel invoiceDisplay;
 	private GridBagLayout layout;
 
-	public InvoiceList() {
+	public InvoiceList(ArrayList<Invoice> invoices) {
 		this.setLayout(new BorderLayout());
 		
-		this.invoices = new ArrayList<>();
+		this.invoices = invoices;
 		
 		this.layout = new GridBagLayout();
 		this.invoiceDisplay = new JPanel(this.layout);
@@ -55,38 +55,22 @@ public class InvoiceList extends JPanel {
 		
 		printInvoices();
 	}
-
-	public void addInvoice(Invoice invoice) {
-		InvoiceListItem toRemove = null;
-		for(InvoiceListItem item : invoices) {
-			if(item.invoice.id.equals(invoice.id) && invoice.status.ordinal() < item.invoice.status.ordinal())
-				toRemove = item;
-		}
-		
-		if(toRemove != null) 
-			this.invoices.remove(toRemove);
-		
-		InvoiceListItem item = new InvoiceListItem(invoice);
-		
-		this.invoices.add(item);
-		
-		this.invoices.sort(new Comparator<InvoiceListItem>() {
-
-			@Override
-			public int compare(InvoiceListItem item1, InvoiceListItem item2) {
-				return item2.invoice.deliveryDate.compareTo(item1.invoice.deliveryDate);
-			}
-		});
-		
-		printInvoices();
-	}
 	
 	public void printInvoices() {
 		this.invoiceDisplay.removeAll();
-		
+
+		this.invoices.sort(new Comparator<Invoice>() {
+			@Override
+			public int compare(Invoice item1, Invoice item2) {
+				return item2.deliveryDate.compareTo(item1.deliveryDate);
+			}
+		});
+
 		int n = this.invoices.size();
 		GridBagConstraints constr = new GridBagConstraints();
-		
+
+		ArrayList<InvoiceListItem> items = new ArrayList<InvoiceListItem>();
+
 		if (n == 0) {
 			ImageIcon loading_gif = new ImageIcon("./icons/loading.gif");
 			JLabel loading = new JLabel("Loading ...", loading_gif, JLabel.CENTER);
@@ -99,8 +83,11 @@ public class InvoiceList extends JPanel {
 			this.invoiceDisplay.add(loading, constr);
 		}
 
+		InvoiceListItem item = null;
 		
 		for(int i=0; i<n; ++i) {
+			item = new InvoiceListItem(this.invoices.get(i));
+
 			constr.gridx = 0;
 			constr.gridy = i*45;
 	        constr.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -108,12 +95,12 @@ public class InvoiceList extends JPanel {
 	        constr.weighty = 0.0;
 			constr.fill = GridBagConstraints.HORIZONTAL;
 			
-			this.invoiceDisplay.add(this.invoices.get(i), constr);
+			this.invoiceDisplay.add(item, constr);
 		}
 		
 		if(n != 0) {
 			constr.weighty = 1.0;
-			this.layout.setConstraints(this.invoices.get(n-1), constr);
+			this.layout.setConstraints(item, constr);
 		}
 	}
 }

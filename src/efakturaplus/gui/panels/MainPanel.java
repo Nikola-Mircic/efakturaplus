@@ -1,4 +1,4 @@
-package efakturaplus.gui;
+package efakturaplus.gui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -11,11 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -23,9 +20,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import efakturaplus.gui.InvoiceList;
+import efakturaplus.gui.StretchIcon;
+import efakturaplus.gui.Window;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
+import efakturaplus.models.User;
 import efakturaplus.util.EFakturaUtil;
 
 public class MainPanel extends JPanel {
@@ -57,11 +58,13 @@ public class MainPanel extends JPanel {
 		this.dataPanel = new JPanel();
 		
 		dataPanel.setLayout(dataPanelLayout);
-		
-		purchaseIl = new InvoiceList();
+
+		User user = User.getUser();
+
+		purchaseIl = new InvoiceList(user.purchases);
 		dataPanel.add(purchaseIl, "PURCHASE");
 		
-		salesIl = new InvoiceList();
+		salesIl = new InvoiceList(user.sales);
 		dataPanel.add(salesIl, "SALES");
 		
 		statsPanel = new StatisticsPanel();
@@ -174,7 +177,7 @@ public class MainPanel extends JPanel {
 		return label;
 	}
 
-	public void printPurchaseInvoices() {
+	public void loadUserInvoices() {
 		new Thread(()->{
 			InvoiceStatus[] pStatusArr = {InvoiceStatus.ReNotified, InvoiceStatus.New, InvoiceStatus.Approved, InvoiceStatus.Reminded, InvoiceStatus.Seen, InvoiceStatus.Rejected};
 
@@ -194,23 +197,22 @@ public class MainPanel extends JPanel {
 		LocalDate today = LocalDate.now();
 		
 		LocalDate from = LocalDate.now().minusMonths(3);
-		
+
+		User user = User.getUser();
+
 		for (int i=0;i<3;++i) {
-			
+
 			for(InvoiceStatus status : statusArr) {
 				ArrayList<Invoice> invoices = efu.getInvoices(type, status, from, from.plusMonths(1));
 				Collections.reverse(invoices);
 
 				for (Invoice element : invoices) {
-					if(type == InvoiceType.PURCHASE) {
-						purchaseIl.addInvoice(element);
-						statsPanel.addInvoice(element);
-					}else {
-						salesIl.addInvoice(element);
-						statsPanel.addInvoice(element);
-					}
+					user.addInvoice(element);
 				}					
 			}
+
+			purchaseIl.printInvoices();
+			salesIl.printInvoices();
 			
 			dataPanel.revalidate();
 			
@@ -225,9 +227,8 @@ public class MainPanel extends JPanel {
 				e.printStackTrace();
 			}
 		}
-		
-		
-		statsPanel.updatePlot();
+
+		statsPanel.updateData();
 	}
 
 }

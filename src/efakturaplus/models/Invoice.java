@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -30,7 +33,7 @@ public class Invoice {
 	public Party customer;
 	public Party supplier;
 
-	public Date deliveryDate;
+	public LocalDateTime deliveryDate;
 
 	public String paymentMod;
 	public String paymentId;
@@ -89,10 +92,10 @@ public class Invoice {
 		/*
 		 * DATE PARSING
 		 */
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		Node dateNode = doc.getElementsByTagName("cbc:IssueDate").item(0);
-		this.deliveryDate = format.parse(dateNode.getTextContent());
+		this.deliveryDate = LocalDate.parse(dateNode.getTextContent(), dtf).atStartOfDay();
 
 		/*
 		 * PAYMENT ID PARSING
@@ -224,14 +227,14 @@ public class Invoice {
 	}
 
 	public String getDateString() {
-		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		
 		if(this.deliveryDate != null)
-			return format.format(this.deliveryDate);
-		return format.format(new Date());
+			return deliveryDate.format(dtf);
+		return LocalDateTime.now().format(dtf);
 	}
 
-	public static Date getDate(Invoice inv) {
+	public static LocalDateTime getDate(Invoice inv) {
 		return inv.deliveryDate;
 	}
 

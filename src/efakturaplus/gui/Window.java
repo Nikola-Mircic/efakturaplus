@@ -6,7 +6,8 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-import efakturaplus.models.User;
+import efakturaplus.gui.panels.KeyPanel;
+import efakturaplus.gui.panels.MainPanel;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -54,7 +55,7 @@ public class Window extends JFrame {
 
 	public void showMainPanel() {
 		this.panels.show(this.getContentPane(), "MAIN_PANEL");
-		this.mainPanel.printPurchaseInvoices();
+		this.mainPanel.loadUserInvoices();
 	}
 	
 	public void showKeyPanel() {

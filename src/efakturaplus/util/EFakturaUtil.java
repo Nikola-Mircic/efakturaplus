@@ -45,7 +45,7 @@ public class EFakturaUtil {
 	}
 
 	public static EFakturaUtil getInstance() {
-		return new EFakturaUtil(User.API_KEY);
+		return new EFakturaUtil(User.getUser().API_KEY);
 	}
 
 	private ArrayList<String> getIdsFromResponse(InvoiceType type, HttpResponse<String> response){
