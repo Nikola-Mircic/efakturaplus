@@ -24,16 +24,29 @@ public class WaterfallChart extends Plot{
 
         System.out.println("Rendering " + items.size() + " items ....");
 
+        double DATA_WIDTH = getWidth() - 2 * BORDER_GAP;
+        double DATA_HEIGHT = getHeight() - 2 * BORDER_GAP;
+
         // Pravougaonici
         for(PlotItem plotItem : items){
             g.setColor(plotItem.color);
-            g.fillRect(BORDER_GAP + plotItem.x, BORDER_GAP + plotItem.y, plotItem.width, plotItem.height);
+
+            int x = (int) (plotItem.x * DATA_WIDTH);
+            int y = (int) (plotItem.y * DATA_HEIGHT);
+            int width = (int) (plotItem.width * DATA_WIDTH);
+            int height = (int) (plotItem.height * DATA_HEIGHT);
+
+            g.fillRect(BORDER_GAP + x, BORDER_GAP + y, width, height);
         }
 
         // Crtice
         for (PlotItem item : items) {
             g.setColor(Color.BLACK);
-            int x0 = BORDER_GAP + item.x + item.width/2;
+
+            int x = (int) (item.x * DATA_WIDTH);
+            int width = (int) (item.width * DATA_WIDTH);
+
+            int x0 = BORDER_GAP + x + width/2;
             int x1 = x0;
             int y0 = getHeight() - BORDER_GAP - GRAPH_POINT_WIDTH;
             int y1 = y0 + 2 * GRAPH_POINT_WIDTH;
@@ -52,10 +65,7 @@ public class WaterfallChart extends Plot{
             }
         });
 
-        double DATA_WIDTH = getWidth() - 2 * BORDER_GAP;
-        double DATA_HEIGHT = getHeight() - 2 * BORDER_GAP;
-
-        int itemWidth = (int) DATA_WIDTH / invoices.size();
+        double itemWidth = 1.0 / invoices.size();
 
         double minValue = 0;
         double maxValue = 0;
@@ -69,22 +79,22 @@ public class WaterfallChart extends Plot{
         }
 
         double totalValueDiff = maxValue - minValue;
-        double heightOffset = Math.abs(minValue) * DATA_HEIGHT / totalValueDiff ;
+        double heightOffset = Math.abs(minValue) / totalValueDiff ;
 
-        double currentHeight = DATA_HEIGHT - heightOffset;
+        double currentHeight = 1 - heightOffset;
 
         for(int i=0; i < invoices.size(); ++i){
             PlotItem item = new PlotItem(invoices.get(i));
 
             item.width = itemWidth;
-            item.height = (int) (0.9 * DATA_HEIGHT * invoices.get(i).payableAmount / totalValueDiff);
+            item.height = 0.9 * invoices.get(i).payableAmount / totalValueDiff;
             item.x = i * itemWidth;
 
             if(invoices.get(i).type == InvoiceType.SALES){
                 currentHeight -= item.height;
-                item.y = (int) (currentHeight);
+                item.y = (currentHeight);
             }else{
-                item.y = (int) (currentHeight);
+                item.y = (currentHeight);
                 currentHeight += item.height;
             }
 
@@ -95,6 +105,9 @@ public class WaterfallChart extends Plot{
 
     @Override
     protected PlotItem isItemFocused(int x, int y) {
+        x /= getWidth();
+        y /= getHeight();
+
         for(PlotItem item : items){
             if(x >= item.x && x <= item.x + item.width
                     && y >= item.y && y <= item.y + item.height){
