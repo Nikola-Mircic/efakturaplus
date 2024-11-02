@@ -11,19 +11,19 @@ public class PlotItem {
 
     public Invoice invoiceRef;
 
-    public int x,y;
-    public int width,height;
+    public double x,y;
+    public double width,height;
     public Color color;
 
     public PlotItem(Invoice invoiceRef){
         this(invoiceRef,0,0,0, 0);
     }
 
-    public PlotItem(Invoice invoiceRef, int x, int y){
+    public PlotItem(Invoice invoiceRef, double x, double y){
         this(invoiceRef,x,y,0,0);
     }
 
-    public PlotItem(Invoice invoiceRef, int x, int y, int width, int height){
+    public PlotItem(Invoice invoiceRef, double x, double y, double width, double height){
         this.invoiceRef = invoiceRef;
         this.color = invoiceRef.type == InvoiceType.PURCHASE ? PURCHASE_COLOR : SALE_COLOR;
         this.x = x;

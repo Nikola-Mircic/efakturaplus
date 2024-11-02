@@ -6,6 +6,6 @@
 
 ### TO-DO list:
  - [x] Multiple types of plots 
- - [ ] Total income/outcome/tax calculation 
+ - [x] Total income/outcome/tax calculation 
  - [ ] Improved PDF file display
 
