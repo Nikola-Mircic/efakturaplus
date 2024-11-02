@@ -28,16 +28,26 @@ public class BarPlot extends Plot{
 
         System.out.println("Rendering " + items.size() + " items ....");
 
+        double DATA_WIDTH = getWidth() - 2 * BORDER_GAP;
+        double DATA_HEIGHT = getHeight() - 2 * BORDER_GAP;
+
         // Pravougaonici
         for(PlotItem plotItem : items){
             g.setColor(plotItem.color);
-            g.fillRect(BORDER_GAP + plotItem.x - plotItem.width/2, BORDER_GAP + plotItem.y, plotItem.width, plotItem.height);
+
+            int x = (int) (plotItem.x * DATA_WIDTH);
+            int y = (int) (plotItem.y * DATA_HEIGHT);
+            int width = GRAPH_POINT_WIDTH;
+            int height = (int) (plotItem.height * DATA_HEIGHT);
+
+            g.fillRect(BORDER_GAP + x - width/2, BORDER_GAP + y, width, height);
         }
 
         // Crtice
         for (PlotItem item : items) {
             g.setColor(Color.BLACK);
-            int x0 = BORDER_GAP + item.x;
+
+            int x0 = BORDER_GAP + (int)(item.x * DATA_WIDTH);
             int x1 = x0;
             int y0 = getHeight() - BORDER_GAP - GRAPH_POINT_WIDTH;
             int y1 = y0 + 2 * GRAPH_POINT_WIDTH;
@@ -75,10 +85,10 @@ public class BarPlot extends Plot{
             long daysToItem = Duration.between(from, inv.deliveryDate).toDays();
             long totalDays = Duration.between(from, today).toDays();
 
-            item.x = (int) (DATA_WIDTH * daysToItem / totalDays);
-            item.y = (int) ((1 - 0.9 * inv.payableAmount / maxAmount) * DATA_HEIGHT);
+            item.x = (double) daysToItem / totalDays;
+            item.y = ((1 - 0.9 * inv.payableAmount / maxAmount));
             item.width = GRAPH_POINT_WIDTH;
-            item.height = (int) DATA_HEIGHT - item.y;
+            item.height =  1 - item.y;
 
             this.items.add(item);
         }
@@ -86,6 +96,9 @@ public class BarPlot extends Plot{
 
     @Override
     protected PlotItem isItemFocused(int x, int y) {
+        x /= getWidth();
+        y /= getHeight();
+
         for(PlotItem item : items){
             if(x >= item.x - item.width && x <= item.x + item.width
                     && y >= item.y && y <= item.y + item.height){
