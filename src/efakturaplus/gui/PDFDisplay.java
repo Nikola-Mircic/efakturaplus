@@ -100,27 +100,41 @@ public class PDFDisplay extends JComponent implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(!e.isControlDown())
-			return;
+		if(e.isControlDown()){
+			// Zooming and moving displayed PDF file
+			switch (e.getKeyCode()){
+				case KeyEvent.VK_ADD -> {
+					this.scale += 0.05;
+				}
+				case KeyEvent.VK_SUBTRACT -> {
+					this.scale -= 0.05;
+				}
+				case KeyEvent.VK_LEFT -> {
+					x_offset -= 20;
+				}
+				case KeyEvent.VK_RIGHT -> {
+					x_offset += 20;
+				}
+				case KeyEvent.VK_UP -> {
+					y_offset += 20;
+				}
+				case KeyEvent.VK_DOWN -> {
+					y_offset -= 20;
+				}
+			}
+		}else{
+			// Switching between pages
+			switch (e.getKeyCode()){
+				case KeyEvent.VK_LEFT -> {
+					this.pageIndex++;
 
-		switch (e.getKeyCode()){
-			case KeyEvent.VK_ADD -> {
-                this.scale += 0.05;
-            }
-            case KeyEvent.VK_SUBTRACT -> {
-				this.scale -= 0.05;
-			}
-			case KeyEvent.VK_LEFT -> {
-				x_offset -= 20;
-			}
-			case KeyEvent.VK_RIGHT -> {
-				x_offset += 20;
-			}
-			case KeyEvent.VK_UP -> {
-				y_offset += 20;
-			}
-			case KeyEvent.VK_DOWN -> {
-				y_offset -= 20;
+					this.pageIndex = Math.min(this.pageIndex, this.pdfFile.getNumPages());
+				}
+				case KeyEvent.VK_RIGHT -> {
+					this.pageIndex--;
+
+					this.pageIndex = Math.max(this.pageIndex, 1);
+				}
 			}
 		}
 
