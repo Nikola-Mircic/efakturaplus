@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import efakturaplus.gui.pdf.PDFDisplay;
 import efakturaplus.models.Invoice;
 import efakturaplus.models.InvoiceStatus;
 import efakturaplus.models.InvoiceType;
@@ -239,19 +241,30 @@ class InvoiceListItem extends JPanel implements MouseListener{
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(PrintColor.CYAN+"Loading PDF doucments..." + PrintColor.RESET);
 				JFrame frame1 = new JFrame("PDF Document");
-				PDFDisplay pdfDisplay1 = new PDFDisplay(invoice.pdfInvoice);		
-				frame1.add(pdfDisplay1);
-				frame1.setSize(700, 1000);
-				frame1.addKeyListener(pdfDisplay1);
-				frame1.setVisible(true);
+                PDFDisplay pdfDisplay1 = null;
+                try {
+                    pdfDisplay1 = new PDFDisplay(invoice.pdfInvoice);
+					frame1.add(pdfDisplay1);
+					frame1.setSize(700, 1000);
+					frame1.addKeyListener(pdfDisplay1);
+					frame1.setVisible(true);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 				
 				if(invoice.pdfAttachment != null) {
 					JFrame frame2 = new JFrame("PDF Attachment");
-					PDFDisplay pdfDisplay2 = new PDFDisplay(invoice.pdfAttachment);		
-					frame2.add(pdfDisplay2);
-					frame2.setSize(700, 1000);
-					frame2.addKeyListener(pdfDisplay2);
-					frame2.setVisible(true);
+                    PDFDisplay pdfDisplay2 = null;
+                    try {
+                        pdfDisplay2 = new PDFDisplay(invoice.pdfAttachment);
+						frame2.add(pdfDisplay2);
+						frame2.setSize(700, 1000);
+						frame2.addKeyListener(pdfDisplay2);
+						frame2.setVisible(true);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
 				}
 			}
 		});
