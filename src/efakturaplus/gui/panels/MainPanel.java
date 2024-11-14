@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import efakturaplus.gui.InvoiceList;
 import efakturaplus.gui.StretchIcon;
 import efakturaplus.gui.Window;
 import efakturaplus.models.Invoice;
@@ -44,8 +43,8 @@ public class MainPanel extends JPanel {
 	private JButton salesBtn;
 	private JButton statsBtn;
 	
-	private InvoiceList purchaseIl;
-	private InvoiceList salesIl;
+	private InvoicePanel purchaseIl;
+	private InvoicePanel salesIl;
 	
 	private StatisticsPanel statsPanel;
 
@@ -61,10 +60,10 @@ public class MainPanel extends JPanel {
 
 		User user = User.getUser();
 
-		purchaseIl = new InvoiceList(user.purchases);
+		purchaseIl = new InvoicePanel(user.purchases);
 		dataPanel.add(purchaseIl, "PURCHASE");
 		
-		salesIl = new InvoiceList(user.sales);
+		salesIl = new InvoicePanel(user.sales);
 		dataPanel.add(salesIl, "SALES");
 		
 		statsPanel = new StatisticsPanel();
