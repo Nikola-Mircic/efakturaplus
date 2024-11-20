@@ -33,6 +33,8 @@ public class PDFDisplay extends JPanel implements KeyListener, MouseListener, Mo
 		this.pdfDocument = pdfDocument;
 		this.renderer = new PDFRenderer(pdfDocument);
 
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
@@ -67,10 +69,10 @@ public class PDFDisplay extends JPanel implements KeyListener, MouseListener, Mo
 				g.dispose();
 			}
 
-			@Override
+			/*@Override
 			public Dimension getPreferredSize() {
 				return new Dimension(pages.getFirst().getWidth(), pages.getFirst().getHeight());
-			}
+			}*/
 		};
 
 		this.add(pagesPanel);
