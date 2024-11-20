@@ -3,8 +3,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serial;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-public class PDFDisplay extends JPanel implements KeyListener {
+public class PDFDisplay extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	// byte array containing the PDF file content
@@ -20,6 +19,9 @@ public class PDFDisplay extends JPanel implements KeyListener {
 	private float scale = 1.0F;
 	private int x_offset = 0;
 	private int y_offset = 0;
+
+	private int mouse_x_origin = -1;
+	private int mouse_y_origin = -1;
 
 	private ArrayList<BufferedImage> pages;
 	private JPanel pagesPanel;
@@ -30,6 +32,9 @@ public class PDFDisplay extends JPanel implements KeyListener {
 	public PDFDisplay(PDDocument pdfDocument) throws IOException {
 		this.pdfDocument = pdfDocument;
 		this.renderer = new PDFRenderer(pdfDocument);
+
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 
 		drawPages();
 		updateLayout();
@@ -138,6 +143,45 @@ public class PDFDisplay extends JPanel implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		x_offset += e.getX() - mouse_x_origin;
+		y_offset += e.getY() - mouse_y_origin;
+		mouse_x_origin = e.getX();
+		mouse_y_origin = e.getY();
+
+		this.pagesPanel.repaint();
+		this.repaint();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		mouse_x_origin = e.getX();
+		mouse_y_origin = e.getY();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		mouse_x_origin = -1;
+		mouse_y_origin = -1;
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 
 	}
 }
