@@ -17,13 +17,14 @@ import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.pdfbox.Loader;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.sun.pdfview.PDFFile;
+import org.apache.pdfbox.pdmodel.*;
 
 import efakturaplus.util.PrintColor;
 
@@ -48,8 +49,8 @@ public class Invoice {
 	public InvoiceStatus status;
 	public InvoiceType type;
 	
-	public PDFFile pdfInvoice;
-	public PDFFile pdfAttachment;
+	public PDDocument pdfInvoice;
+	public PDDocument pdfAttachment;
 	
 	private String source;
 
@@ -149,16 +150,16 @@ public class Invoice {
 		fos.close();*/
 		
 		
-		this.pdfInvoice = new PDFFile(ByteBuffer.wrap(documentBytes));
-		System.out.println(this.pdfInvoice.getNumPages());
-		
+		//this.pdfInvoice = new PDFDocument(ByteBuffer.wrap(documentBytes));
+		this.pdfInvoice = Loader.loadPDF(documentBytes);
+
 		/*
 		 * PARSING PDF ATTACHMENT
 		 * */
 		Node AttachmentPDF = doc.getElementsByTagName("cbc:EmbeddedDocumentBinaryObject").item(0);
 		if(AttachmentPDF != null) {
 			byte[] attachmentBytes = Base64.getDecoder().decode(AttachmentPDF.getTextContent().getBytes("UTF-8"));
-			this.pdfAttachment = new PDFFile(ByteBuffer.wrap(attachmentBytes));
+			this.pdfAttachment = Loader.loadPDF(attachmentBytes);
 		}
 	}
 
