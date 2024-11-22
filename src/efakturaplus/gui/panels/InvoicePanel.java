@@ -246,7 +246,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
                     pdfDisplay1 = new PDFDisplay(invoice.pdfInvoice);
 					frame1.add(pdfDisplay1);
 					frame1.setSize(700, 1000);
-					frame1.addKeyListener(pdfDisplay1);
+					frame1.addKeyListener(pdfDisplay1.navigator);
 					frame1.setVisible(true);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -259,7 +259,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
                         pdfDisplay2 = new PDFDisplay(invoice.pdfAttachment);
 						frame2.add(pdfDisplay2);
 						frame2.setSize(700, 1000);
-						frame2.addKeyListener(pdfDisplay2);
+						frame2.addKeyListener(pdfDisplay2.navigator);
 						frame2.setVisible(true);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
