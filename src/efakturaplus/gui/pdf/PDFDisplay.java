@@ -15,13 +15,13 @@ public class PDFDisplay extends JPanel{
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<BufferedImage> pages;
-	private JPanel pagesPanel;
+	public ArrayList<BufferedImage> pages;
+	public JPanel pagesPanel;
 
-	private int pageIndex = 0;
-	private float scale = 1.0F;
-	private int x_offset = 0;
-	private int y_offset = 0;
+	public int pageIndex = 0;
+	public float scale = 1.0F;
+	public int x_offset = 0;
+	public int y_offset = 0;
 
 	private final PDDocument pdfDocument;
 	private final PDFRenderer renderer;
@@ -33,15 +33,15 @@ public class PDFDisplay extends JPanel{
 		this.pdfDocument = pdfDocument;
 		this.renderer = new PDFRenderer(pdfDocument);
 
-		this.setLayout(new BorderLayout(3,3));
-
-		this.inputListener = new PDFInputListener(this);
-
-		this.addMouseListener(inputListener);
-		this.addMouseMotionListener(inputListener);
+		this.setLayout(new BorderLayout());
 
 		drawPages();
 		updateLayout();
+
+		this.inputListener = new PDFInputListener(navigator);
+
+		this.addMouseListener(inputListener);
+		this.addMouseMotionListener(inputListener);
 	}
 
 	public void drawPages() throws IOException {
@@ -62,11 +62,12 @@ public class PDFDisplay extends JPanel{
 			public void paint(Graphics g) {
 				super.paint(g);
 
+				int pageWidth = pages.getFirst().getWidth();
 				int pageHeight = pages.getFirst().getHeight() + 5;
 
 				for(int i = 0; i<pages.size(); ++i) {
 					g.drawImage(pages.get(i),
-								x_offset,
+								x_offset + (getWidth() - pageWidth)/2,
 								(i - pageIndex) * pageHeight + y_offset,
 								null);
 				}
@@ -93,81 +94,6 @@ public class PDFDisplay extends JPanel{
 
 	public PDFInputListener getInputListener() {
 		return inputListener;
-	}
-
-	public void setPageIndex(int pageIndex) {
-		this.pageIndex = pageIndex;
-
-		refresh();
-	}
-
-	public void nextPage(){
-		pageIndex++;
-		pageIndex = Math.min(pageIndex, this.pages.size() - 1);
-		y_offset = 0;
-		x_offset = 0;
-
-		refresh();
-	}
-
-	public void previousPage(){
-		pageIndex--;
-		pageIndex = Math.max(pageIndex, 0);
-		y_offset = 0;
-		x_offset = 0;
-
-		refresh();
-	}
-
-	public int getPageIndex() {
-		return pageIndex;
-	}
-
-	public void changeScale(float dScale){
-		this.scale += dScale;
-
-		scale = Math.max(scale, 0.5F);
-		scale = Math.min(scale, 2F);
-
-        try {
-            this.drawPages();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-		refresh();
-	}
-
-	public void setScale(float scale) {
-		this.scale = scale;
-
-		this.scale = Math.max(this.scale, 0.5F);
-		this.scale = Math.min(this.scale, 2F);
-
-		refresh();
-	}
-
-	public float getScale() {
-		return scale;
-	}
-
-	public void setOffset(int x_offset, int y_offset) {
-		this.x_offset = x_offset;
-		this.y_offset = y_offset;
-
-		refresh();
-	}
-
-	public void changeOffset(int dX_offset, int dY_offset) {
-		this.x_offset += dX_offset;
-		this.y_offset += dY_offset;
-
-		refresh();
-	}
-
-	private void refresh(){
-		this.pagesPanel.repaint();
-		this.repaint();
 	}
 
 	public int getX_offset() {

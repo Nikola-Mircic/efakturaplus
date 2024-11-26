@@ -1,16 +1,15 @@
 package efakturaplus.gui.pdf;
 
 import java.awt.event.*;
-import java.io.IOException;
 
 public class PDFInputListener implements KeyListener, MouseListener, MouseMotionListener {
-    private PDFDisplay parent;
+    private PDFNavigator navigator;
 
     private int mouse_x_origin = -1;
     private int mouse_y_origin = -1;
 
-    public PDFInputListener(PDFDisplay parent){
-        this.parent = parent;
+    public PDFInputListener(PDFNavigator navigator){
+        this.navigator = navigator;
     }
 
     @Override
@@ -25,32 +24,32 @@ public class PDFInputListener implements KeyListener, MouseListener, MouseMotion
             // Zooming and moving displayed PDF file
             switch (e.getKeyCode()){
                 case KeyEvent.VK_ADD -> {
-                    parent.changeScale(0.05f);
+                    navigator.changeScale(0.05f);
                 }
                 case KeyEvent.VK_SUBTRACT -> {
-                    parent.changeScale(-0.05f);
+                    navigator.changeScale(-0.05f);
                 }
                 case KeyEvent.VK_LEFT -> {
-                    parent.changeOffset(-20, 0);
+                    navigator.changeOffset(-20, 0);
                 }
                 case KeyEvent.VK_RIGHT -> {
-                    parent.changeOffset(20, 0);
+                    navigator.changeOffset(20, 0);
                 }
             }
         }else{
             // Switching between pages
             switch (e.getKeyCode()){
                 case KeyEvent.VK_RIGHT -> {
-                    parent.nextPage();
+                    navigator.nextPage();
                 }
                 case KeyEvent.VK_LEFT -> {
-                    parent.previousPage();
+                    navigator.previousPage();
                 }
                 case KeyEvent.VK_UP -> {
-                    parent.changeOffset(0, 20);
+                    navigator.changeOffset(0, 20);
                 }
                 case KeyEvent.VK_DOWN -> {
-                    parent.changeOffset(0, -20);
+                    navigator.changeOffset(0, -20);
                 }
             }
         }
@@ -66,7 +65,7 @@ public class PDFInputListener implements KeyListener, MouseListener, MouseMotion
         int dx = e.getX() - mouse_x_origin;
         int dy = e.getY() - mouse_y_origin;
 
-        parent.changeOffset(dx, dy);
+        navigator.changeOffset(dx, dy);
 
         mouse_x_origin = e.getX();
         mouse_y_origin = e.getY();
