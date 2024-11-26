@@ -4,8 +4,3 @@
 
 <hr>
 
-### TO-DO list:
- - [x] Multiple types of plots 
- - [x] Total income/outcome/tax calculation 
- - [ ] Improved PDF file display
-
