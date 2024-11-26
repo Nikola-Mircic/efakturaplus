@@ -1,130 +1,105 @@
 package efakturaplus.gui.pdf;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
-public class PDFNavigator implements KeyListener, MouseListener, MouseMotionListener {
-
-    public int pageIndex = 0;
-    public float scale = 1.0F;
-    public int x_offset = 0;
-    public int y_offset = 0;
-
-    private int mouse_x_origin = -1;
-    private int mouse_y_origin = -1;
-
+public class PDFNavigator extends JComponent{
     private PDFDisplay parent;
+
+    private JLabel pageIndex;
+    private JButton prevPageBtn;
+    private JButton nextPageBtn;
+    private JButton zoomInBtn;
+    private JButton zoomOutBtn;
+    private JSlider zoomSlider;
 
     public PDFNavigator(PDFDisplay parent){
         this.parent = parent;
+
+        setupLayout();
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
+    private void setupLayout(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-    }
+        pageIndex = new JLabel(parent.getPageIndex() + 1 + " / " + parent.getPages().size());
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if(e.isControlDown()){
-            // Zooming and moving displayed PDF file
-            switch (e.getKeyCode()){
-                case KeyEvent.VK_ADD -> {
-                    this.scale += 0.05F;
-                    try {
-                        this.parent.drawPages();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-                case KeyEvent.VK_SUBTRACT -> {
-                    this.scale -= 0.05F;
-                    try {
-                        this.parent.drawPages();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-                case KeyEvent.VK_LEFT -> {
-                    x_offset -= 20;
-                }
-                case KeyEvent.VK_RIGHT -> {
-                    x_offset += 20;
-                }
+        zoomSlider = getSlider();
+
+        prevPageBtn = createButton("<", new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.nextPage();
+                pageIndex.setText(parent.getPages().size() + "/" + parent.getPages().size());
             }
-        }else{
-            // Switching between pages
-            switch (e.getKeyCode()){
-                case KeyEvent.VK_RIGHT -> {
-                    this.pageIndex++;
+        });
+        nextPageBtn = createButton(">", new ActionListener(){
 
-                    this.pageIndex = Math.min(this.pageIndex, this.parent.getPages().size() - 1);
-                    y_offset = 0;
-
-                    System.out.println(pageIndex);
-                }
-                case KeyEvent.VK_LEFT -> {
-                    this.pageIndex--;
-
-                    this.pageIndex = Math.max(this.pageIndex, 0);
-                    y_offset = 0;
-
-                    System.out.println(pageIndex);
-                }
-                case KeyEvent.VK_UP -> {
-                    y_offset += 20;
-                }
-                case KeyEvent.VK_DOWN -> {
-                    y_offset -= 20;
-                }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.previousPage();
+                pageIndex.setText(parent.getPages().size() + "/" + parent.getPages().size());
             }
-        }
+        });
+        zoomInBtn = createButton("+", new ActionListener(){
 
-        this.parent.getPagesPanel().repaint();
-        this.parent.repaint();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.changeScale(0.05f);
+
+                zoomSlider.setValue((int)(parent.getScale() * 100));
+            }
+        });
+        zoomOutBtn = createButton("-", new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.changeScale(-0.05f);
+
+                zoomSlider.setValue((int)(parent.getScale() * 100));
+            }
+        });
+
+        panel.add(prevPageBtn);
+        panel.add(pageIndex);
+        panel.add(nextPageBtn);
+        panel.add(zoomOutBtn);
+        panel.add(zoomSlider);
+        panel.add(zoomInBtn);
+
+        this.add(panel);
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
+    public JButton createButton(String text, ActionListener listener){
+        JButton button = new JButton(text);
 
+        button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        button.setMargin(new Insets(5, 5, 5, 5));
+        button.addActionListener(listener);
+
+        return button;
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        x_offset += e.getX() - mouse_x_origin;
-        y_offset += e.getY() - mouse_y_origin;
-        mouse_x_origin = e.getX();
-        mouse_y_origin = e.getY();
 
-        this.parent.getPagesPanel().repaint();
-        this.parent.repaint();
+    public JSlider getSlider(){
+        JSlider slider = new JSlider(50, 200, 100);
+
+        slider.setMajorTickSpacing(50);
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int value = slider.getValue();
+                parent.setScale(value/100.0F);
+            }
+        });
+
+        return slider;
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e) {}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        mouse_x_origin = e.getX();
-        mouse_y_origin = e.getY();
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        mouse_x_origin = -1;
-        mouse_y_origin = -1;
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
 }

@@ -18,21 +18,27 @@ public class PDFDisplay extends JPanel{
 	private ArrayList<BufferedImage> pages;
 	private JPanel pagesPanel;
 
+	private int pageIndex = 0;
+	private float scale = 1.0F;
+	private int x_offset = 0;
+	private int y_offset = 0;
+
 	private final PDDocument pdfDocument;
 	private final PDFRenderer renderer;
 
-	public PDFNavigator navigator;
+	private PDFNavigator navigator;
+    public PDFInputListener inputListener;
 
 	public PDFDisplay(PDDocument pdfDocument) throws IOException {
 		this.pdfDocument = pdfDocument;
 		this.renderer = new PDFRenderer(pdfDocument);
 
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BorderLayout(3,3));
 
-		this.navigator = new PDFNavigator(this);
+		this.inputListener = new PDFInputListener(this);
 
-		this.addMouseListener(navigator);
-		this.addMouseMotionListener(navigator);
+		this.addMouseListener(inputListener);
+		this.addMouseMotionListener(inputListener);
 
 		drawPages();
 		updateLayout();
@@ -41,12 +47,15 @@ public class PDFDisplay extends JPanel{
 	public void drawPages() throws IOException {
 		pages = new ArrayList<>();
 		for(int i = 0; i<pdfDocument.getNumberOfPages(); ++i){
-			pages.add(renderer.renderImage(i, navigator.scale));
+			pages.add(renderer.renderImage(i, scale));
 		}
 	}
 
 	public void updateLayout(){
 		this.removeAll();
+
+        this.navigator = new PDFNavigator(this);
+		this.add(navigator, BorderLayout.NORTH);
 
 		this.pagesPanel = new JPanel(){
 			@Override
@@ -55,26 +64,23 @@ public class PDFDisplay extends JPanel{
 
 				int pageHeight = pages.getFirst().getHeight() + 5;
 
-				System.out.println("Page height: " + pageHeight);
-				System.out.println("[x_offest, y_offset]: " + navigator.x_offset + "," + navigator.y_offset);
-
 				for(int i = 0; i<pages.size(); ++i) {
 					g.drawImage(pages.get(i),
-								navigator.x_offset,
-								(i - navigator.pageIndex) * pageHeight + navigator.y_offset,
+								x_offset,
+								(i - pageIndex) * pageHeight + y_offset,
 								null);
 				}
 
 				g.dispose();
 			}
 
-			/*@Override
+			@Override
 			public Dimension getPreferredSize() {
 				return new Dimension(pages.getFirst().getWidth(), pages.getFirst().getHeight());
-			}*/
+			}
 		};
 
-		this.add(pagesPanel);
+		this.add(pagesPanel, BorderLayout.CENTER);
 	}
 
 	public ArrayList<BufferedImage> getPages(){
@@ -83,5 +89,92 @@ public class PDFDisplay extends JPanel{
 
 	public JPanel getPagesPanel(){
 		return pagesPanel;
+	}
+
+	public PDFInputListener getInputListener() {
+		return inputListener;
+	}
+
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+
+		refresh();
+	}
+
+	public void nextPage(){
+		pageIndex++;
+		pageIndex = Math.min(pageIndex, this.pages.size() - 1);
+		y_offset = 0;
+		x_offset = 0;
+
+		refresh();
+	}
+
+	public void previousPage(){
+		pageIndex--;
+		pageIndex = Math.max(pageIndex, 0);
+		y_offset = 0;
+		x_offset = 0;
+
+		refresh();
+	}
+
+	public int getPageIndex() {
+		return pageIndex;
+	}
+
+	public void changeScale(float dScale){
+		this.scale += dScale;
+
+		scale = Math.max(scale, 0.5F);
+		scale = Math.min(scale, 2F);
+
+        try {
+            this.drawPages();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+		refresh();
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+
+		this.scale = Math.max(this.scale, 0.5F);
+		this.scale = Math.min(this.scale, 2F);
+
+		refresh();
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setOffset(int x_offset, int y_offset) {
+		this.x_offset = x_offset;
+		this.y_offset = y_offset;
+
+		refresh();
+	}
+
+	public void changeOffset(int dX_offset, int dY_offset) {
+		this.x_offset += dX_offset;
+		this.y_offset += dY_offset;
+
+		refresh();
+	}
+
+	private void refresh(){
+		this.pagesPanel.repaint();
+		this.repaint();
+	}
+
+	public int getX_offset() {
+		return x_offset;
+	}
+
+	public int getY_offset() {
+		return y_offset;
 	}
 }
