@@ -216,9 +216,7 @@ public class Invoice {
 	public String toString() {
 		String result = "";
 
-		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-
-		result += "["+format.format(this.deliveryDate)+"] ";
+		result += "["+this.getDateString()+"] ";
 
 
 		result += this.supplier;
