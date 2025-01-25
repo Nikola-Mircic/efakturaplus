@@ -13,9 +13,13 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
+import org.apache.pdfbox.util.StringUtil;
 import org.json.JSONObject;
 
 import efakturaplus.models.Invoice;
@@ -57,7 +61,20 @@ public class QRUtil {
 			JSONObject object = new JSONObject(res.body());
 			
 			System.out.println(res.body());
-		
+
+			int status = object.getJSONObject("s").getInt("code");
+
+			if(status != 0){
+				String desc = object.getJSONObject("s").getString("desc");
+				List<String> messages = object.getJSONArray("e").toList().stream().map(Object::toString).collect(Collectors.toList());
+
+				String msg = join(messages, "\n");
+
+				JOptionPane.showMessageDialog(null, msg, desc, JOptionPane.ERROR_MESSAGE);
+
+				return new byte[0];
+			}
+
 			String encodedImg = object.getString("i");
 			
 			return Base64.getDecoder().decode(encodedImg.getBytes("UTF-8"));
@@ -66,6 +83,16 @@ public class QRUtil {
 		}
 		
 		return null;
+	}
+
+	private String join(List<String> list, String delimiter) {
+		StringBuilder sb = new StringBuilder();
+
+		for(String s : list) {
+			sb.append(s);
+		}
+
+		return sb.toString();
 	}
 	
 	private String invoiceToString(Invoice inv) {
