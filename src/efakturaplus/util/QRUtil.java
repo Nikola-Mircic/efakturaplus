@@ -65,12 +65,15 @@ public class QRUtil {
 			int status = object.getJSONObject("s").getInt("code");
 
 			if(status != 0){
-				String desc = object.getJSONObject("s").getString("desc");
+				String title = object.getJSONObject("s").getString("desc");
 				List<String> messages = object.getJSONArray("e").toList().stream().map(Object::toString).collect(Collectors.toList());
 
 				String msg = join(messages, "\n");
-
-				JOptionPane.showMessageDialog(null, msg, desc, JOptionPane.ERROR_MESSAGE);
+				
+				JOptionPane.showMessageDialog(null,
+										"<html><body><p style='width: 300px;'>"+msg+"</p></body></html>",
+												title,
+												JOptionPane.ERROR_MESSAGE);
 
 				return new byte[0];
 			}
