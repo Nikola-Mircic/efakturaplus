@@ -131,8 +131,8 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 		this.selectBorderColor();
 		
-		this.fontColor = UIManager.getColor ( "Label.foreground" );;
-		this.bckgColor = UIManager.getColor ( "Panel.background" );;
+		this.fontColor = UIManager.getColor ( "Label.foreground" );
+		this.bckgColor = UIManager.getColor ( "Panel.background" );
 
 		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
 		
@@ -144,13 +144,13 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.addMouseListener(this);
 		
 		setComponentsLayout();
-		
+
+		createOptions(invoice);
+
 		setColors();
 		
 		Border border = BorderFactory.createMatteBorder(0, 4, 0, 0, borderColor);
 		this.setBorder(border);
-		
-		createOptions(invoice);
 	}
 	
 	private void setComponentsLayout() {
@@ -207,12 +207,14 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		setCompColors(date);
 		setCompColors(amount);
 		setCompColors(supplier);
-		
+
+		this.options.setBackground(bckgColor);
 		this.setBackground(bckgColor);
 	}
 	
 	private void setCompColors(JLabel label) {
 		label.setForeground(fontColor);
+		label.setBackground(bckgColor);
 	}
 
 	@Override
@@ -276,7 +278,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		if(invoice.type == InvoiceType.PURCHASE) {
 			JButton pay = new JButton("Pay");
 			JButton approve = new JButton("Approve");
-			
+
 			pay.setPreferredSize(new Dimension(150, 30));
 			approve.setPreferredSize(new Dimension(150, 30));
 			
@@ -347,7 +349,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.weightx = 1.0;
-		gbc.insets = new Insets(5, 5, 5, 5); 
+		gbc.insets = new Insets(0, 5, 5, 5);
 		
 		this.add(options, gbc);
 		
@@ -404,13 +406,13 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		this.bckgColor = new Color(0xE0E0E0);
+		this.setColors();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		this.bckgColor = UIManager.getColor ( "Panel.background" );
+		this.setColors();
 	}
 }
