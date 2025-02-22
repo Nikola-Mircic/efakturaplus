@@ -217,6 +217,40 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		label.setBackground(bckgColor);
 	}
 
+	private void setColorBehavior(JButton button){
+		button.setFocusPainted(false);
+		button.setBorderPainted(false);
+		button.setContentAreaFilled(true);
+		button.setOpaque(true);
+
+		Color btnDefault = new Color(0xD0D0D0);
+		Color btnHover = new Color(0xE0E0E0);
+		Color btnPressed = new Color(0xB0B0B0);
+
+		button.setBackground(btnDefault);
+
+		button.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				button.setBackground(btnHover);
+			}
+
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				button.setBackground(btnDefault);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				button.setBackground(btnPressed);
+				super.mousePressed(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				button.setBackground(btnDefault);
+			}
+		});
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println(this.invoice.status.name() + " " + this.invoice.payableAmount + " " + this.invoice.supplier.name);
@@ -237,7 +271,9 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		JButton details = new JButton("Details");
 		
 		details.setPreferredSize(new Dimension(150, 30));
-		
+
+		setColorBehavior(details);
+
 		details.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -281,7 +317,10 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 			pay.setPreferredSize(new Dimension(150, 30));
 			approve.setPreferredSize(new Dimension(150, 30));
-			
+
+			setColorBehavior(pay);
+			setColorBehavior(approve);
+
 			pay.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
