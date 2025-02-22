@@ -131,8 +131,8 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 		this.selectBorderColor();
 		
-		this.fontColor = UIManager.getColor ( "Label.foreground" );;
-		this.bckgColor = UIManager.getColor ( "Panel.background" );;
+		this.fontColor = UIManager.getColor ( "Label.foreground" );
+		this.bckgColor = UIManager.getColor ( "Panel.background" );
 
 		this.date = new JLabel(this.invoice.getDateString(), JLabel.CENTER);
 		
@@ -144,13 +144,13 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		this.addMouseListener(this);
 		
 		setComponentsLayout();
-		
+
+		createOptions(invoice);
+
 		setColors();
 		
 		Border border = BorderFactory.createMatteBorder(0, 4, 0, 0, borderColor);
 		this.setBorder(border);
-		
-		createOptions(invoice);
 	}
 	
 	private void setComponentsLayout() {
@@ -207,12 +207,48 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		setCompColors(date);
 		setCompColors(amount);
 		setCompColors(supplier);
-		
+
+		this.options.setBackground(bckgColor);
 		this.setBackground(bckgColor);
 	}
 	
 	private void setCompColors(JLabel label) {
 		label.setForeground(fontColor);
+		label.setBackground(bckgColor);
+	}
+
+	private void setColorBehavior(JButton button){
+		button.setFocusPainted(false);
+		button.setBorderPainted(false);
+		button.setContentAreaFilled(true);
+		button.setOpaque(true);
+
+		Color btnDefault = new Color(0xD0D0D0);
+		Color btnHover = new Color(0xE0E0E0);
+		Color btnPressed = new Color(0xB0B0B0);
+
+		button.setBackground(btnDefault);
+
+		button.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseEntered(java.awt.event.MouseEvent evt) {
+				button.setBackground(btnHover);
+			}
+
+			public void mouseExited(java.awt.event.MouseEvent evt) {
+				button.setBackground(btnDefault);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				button.setBackground(btnPressed);
+				super.mousePressed(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				button.setBackground(btnDefault);
+			}
+		});
 	}
 
 	@Override
@@ -235,7 +271,9 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		JButton details = new JButton("Details");
 		
 		details.setPreferredSize(new Dimension(150, 30));
-		
+
+		setColorBehavior(details);
+
 		details.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -276,10 +314,13 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		if(invoice.type == InvoiceType.PURCHASE) {
 			JButton pay = new JButton("Pay");
 			JButton approve = new JButton("Approve");
-			
+
 			pay.setPreferredSize(new Dimension(150, 30));
 			approve.setPreferredSize(new Dimension(150, 30));
-			
+
+			setColorBehavior(pay);
+			setColorBehavior(approve);
+
 			pay.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -347,7 +388,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.weightx = 1.0;
-		gbc.insets = new Insets(5, 5, 5, 5); 
+		gbc.insets = new Insets(0, 5, 5, 5);
 		
 		this.add(options, gbc);
 		
@@ -404,13 +445,13 @@ class InvoiceListItem extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		this.bckgColor = new Color(0xE0E0E0);
+		this.setColors();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		this.bckgColor = UIManager.getColor ( "Panel.background" );
+		this.setColors();
 	}
 }

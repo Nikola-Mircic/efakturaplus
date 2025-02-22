@@ -163,7 +163,11 @@ public class KeyPanel extends JPanel {
 
 		btn.setLayout(new BoxLayout(btn, BoxLayout.Y_AXIS));
 
-		btn.add(centeredLabel(text));
+        JLabel label = centeredLabel(text);
+        label.setBorder(BorderFactory.createEmptyBorder(5, 30, 5, 30));
+        label.setFont(new Font(Font.DIALOG, Font.PLAIN, 15));
+
+		btn.add(label);
 		btn.addActionListener(listener);
 
 		return btn;
