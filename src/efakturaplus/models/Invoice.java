@@ -54,9 +54,10 @@ public class Invoice {
 	
 	private String source;
 
-	public Invoice(String id, String source) {
+	public Invoice(String id, InvoiceType type, InvoiceStatus status, String source) {
 		this.id = id;
-		
+		this.type = type;
+		this.status = status;
 		this.source = source;
 		
 		supplier = new Party();
