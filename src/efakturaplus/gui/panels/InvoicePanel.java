@@ -121,7 +121,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	
 	private JLabel date;
 	private JLabel amount;
-	private JLabel supplier;
+	private JLabel party;
 	
 	private JPanel options;
 
@@ -138,8 +138,11 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		
 		DecimalFormat formater = new DecimalFormat("###,###,##0.00");
 		
-		this.amount = new JLabel("" + formater.format(this.invoice.payableAmount) + " "+this.invoice.currency, JLabel.RIGHT);
-		this.supplier = new JLabel(this.invoice.supplier.name.toString());
+		this.amount = new JLabel(formater.format(this.invoice.payableAmount) + " "+this.invoice.currency, JLabel.RIGHT);
+        if(invoice.type == InvoiceType.PURCHASE)
+            this.party = new JLabel(this.invoice.supplier.name);
+        else
+            this.party = new JLabel(this.invoice.customer.name);
 		
 		this.addMouseListener(this);
 		
@@ -156,7 +159,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	private void setComponentsLayout() {
 		this.date.setPreferredSize(new Dimension(120, 20));
 		this.amount.setPreferredSize(new Dimension(120, 20));
-		this.supplier.setPreferredSize(new Dimension(150, 20));
+		this.party.setPreferredSize(new Dimension(150, 20));
 
 		this.setLayout(new GridBagLayout());
 		
@@ -179,7 +182,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 		gbc.gridx = 2;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.weightx = 1.0;
-		this.add(supplier, gbc);
+		this.add(party, gbc);
 	}
 	
 	private void selectBorderColor() {
@@ -206,7 +209,7 @@ class InvoiceListItem extends JPanel implements MouseListener{
 	private void setColors() {
 		setCompColors(date);
 		setCompColors(amount);
-		setCompColors(supplier);
+		setCompColors(party);
 
 		this.options.setBackground(bckgColor);
 		this.setBackground(bckgColor);
