@@ -97,7 +97,26 @@ public class QRUtil {
 
 		return sb.toString();
 	}
-	
+
+	private String removeUselessChars(String str) {
+		int count = 0;
+		char[] chars = str.toCharArray();
+
+		for (int i = 0; i < str.length(); i++) {
+			if(!Character.isLetterOrDigit( chars[i] ) && chars[i] != '-') {
+				count++;
+				continue;
+			}
+
+			chars[i-count] = chars[i];
+		}
+
+		str = String.valueOf(chars);
+		str = str.substring(0, str.length()-count);
+
+		return str;
+	}
+
 	private String invoiceToString(Invoice inv) {
 		ArrayList<String> s = new ArrayList<String>();
 		
@@ -133,16 +152,18 @@ public class QRUtil {
 		if(inv.paymentId != null) {
 			String ro = "RO:";
 			
-			if(inv.paymentMod == null || inv.paymentMod.equals("")) {
+			if(inv.paymentMod == null || inv.paymentMod.isEmpty()) {
 				ro+="00";
 			}else {
 				ro+=inv.paymentMod;
 			}
 
+			inv.paymentId = removeUselessChars(inv.paymentId);
+
 			ro+=inv.paymentId;
 
-			ro = ro.replace("-", "");
-			ro = ro.replace("/", "");
+			if("97".equals(inv.paymentMod))
+				ro = ro.replace("-", "");
 			
 			s.add(ro);
 		}
