@@ -138,8 +138,11 @@ public class QRUtil {
 			}else {
 				ro+=inv.paymentMod;
 			}
-			
-			ro+=inv.paymentId.replace("-", "");
+
+			ro+=inv.paymentId;
+
+			ro = ro.replace("-", "");
+			ro = ro.replace("/", "");
 			
 			s.add(ro);
 		}
