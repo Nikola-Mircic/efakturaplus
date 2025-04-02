@@ -99,21 +99,16 @@ public class QRUtil {
 	}
 
 	private String removeUselessChars(String str) {
-		int count = 0;
 		char[] chars = str.toCharArray();
 
 		for (int i = 0; i < str.length(); i++) {
 			if(!Character.isLetterOrDigit( chars[i] ) && chars[i] != '-') {
-				count++;
-				continue;
+				chars[i] = '-';
 			}
-
-			chars[i-count] = chars[i];
 		}
 
 		str = String.valueOf(chars);
-		str = str.substring(0, str.length()-count);
-
+		
 		return str;
 	}
 
