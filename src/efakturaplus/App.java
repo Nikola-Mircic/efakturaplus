@@ -1,6 +1,7 @@
 package efakturaplus;
 
 import efakturaplus.gui.Window;
+import efakturaplus.util.PrinterUtil;
 
 public class App {
 

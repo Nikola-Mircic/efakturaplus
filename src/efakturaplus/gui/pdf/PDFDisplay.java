@@ -22,20 +22,27 @@ public class PDFDisplay extends JPanel{
 	public float scale = 1.0F;
 	public int x_offset = 0;
 	public int y_offset = 0;
+	private boolean showNavigator = false;
 
-	private final PDDocument pdfDocument;
+	public final PDDocument pdfDocument;
 	private final PDFRenderer renderer;
 
 	private PDFNavigator navigator;
     public PDFInputListener inputListener;
 
 	public PDFDisplay(PDDocument pdfDocument) throws IOException {
+		this(pdfDocument, true);
+	}
+
+	public PDFDisplay(PDDocument pdfDocument, boolean showNavigator) throws IOException {
 		this.pdfDocument = pdfDocument;
+		this.showNavigator = showNavigator;
+
 		this.renderer = new PDFRenderer(pdfDocument);
-
 		this.setLayout(new BorderLayout());
-
 		drawPages();
+		this.navigator = new PDFNavigator(this);
+
 		updateLayout();
 
 		this.inputListener = new PDFInputListener(navigator);
@@ -54,8 +61,9 @@ public class PDFDisplay extends JPanel{
 	public void updateLayout(){
 		this.removeAll();
 
-        this.navigator = new PDFNavigator(this);
-		this.add(navigator, BorderLayout.NORTH);
+		if(showNavigator){
+			this.add(navigator, BorderLayout.NORTH);
+		}
 
 		this.pagesPanel = new JPanel(){
 			@Override

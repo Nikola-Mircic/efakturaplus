@@ -1,6 +1,7 @@
 package efakturaplus.gui.pdf;
 
 import efakturaplus.gui.StretchIcon;
+import efakturaplus.util.PrinterUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -50,15 +51,19 @@ public class PDFNavigator extends JComponent{
 
         Image zoomInImg = null;
         Image zoomOutImg = null;
+        Image printerImg = null;
         try {
             zoomInImg = ImageIO.read(new File("icons/zoom-in.png"));
             zoomOutImg = ImageIO.read(new File("icons/zoom-out.png"));
+            printerImg = ImageIO.read(new File("icons/printer.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         JButton zoomInBtn;
         JButton zoomOutBtn;
+        JButton printBtn;
+
         if(zoomInImg != null && zoomOutImg != null){
             zoomInBtn = createButton(new StretchIcon(zoomInImg), new ActionListener(){
 
@@ -93,12 +98,31 @@ public class PDFNavigator extends JComponent{
             });
         }
 
+        if(printerImg != null){
+            printBtn = createButton(new StretchIcon(printerImg), new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PrinterUtil util = new PrinterUtil(parent.pdfDocument);
+                    util.show();
+                }
+            });
+        }else{
+            printBtn = createButton("Print", new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PrinterUtil util = new PrinterUtil(parent.pdfDocument);
+                    util.show();
+                }
+            });
+        }
+
         panel.add(prevPageBtn);
         panel.add(pageIndexLabel);
         panel.add(nextPageBtn);
         panel.add(zoomOutBtn);
         panel.add(zoomSlider);
         panel.add(zoomInBtn);
+        panel.add(printBtn);
 
         this.add(panel);
     }

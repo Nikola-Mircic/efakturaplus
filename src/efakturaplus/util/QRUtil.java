@@ -99,6 +99,7 @@ public class QRUtil {
 	}
 
 	private String removeUselessChars(String str) {
+		str = str.trim();
 		char[] chars = str.toCharArray();
 
 		for (int i = 0; i < str.length(); i++) {
@@ -121,7 +122,7 @@ public class QRUtil {
 		
 		inv.payeeFinancialAccs.set(0, inv.payeeFinancialAccs.get(0).replace("-", ""));
 		
-		StringBuffer buff = new StringBuffer(inv.payeeFinancialAccs.get(0));
+		StringBuffer buff = new StringBuffer(inv.payeeFinancialAccs.get(0).trim());
 		
 		while(buff.length() < 18) {
 			buff.insert(3, "0");
@@ -151,9 +152,8 @@ public class QRUtil {
 				ro+="00";
 			}else {
 				ro+=inv.paymentMod;
+				inv.paymentId = removeUselessChars(inv.paymentId);
 			}
-
-			inv.paymentId = removeUselessChars(inv.paymentId);
 
 			ro+=inv.paymentId;
 
